@@ -1,8 +1,28 @@
-C initial\sempty\scheck-in
-D 2023-12-28T19:27:06.219
-R d41d8cd98f00b204e9800998ecf8427e
-T *branch * trunk
-T *sym-trunk *
+C Inital\scommit
+D 2023-12-28T19:30:13.433
+F package-lock.json e20520b82dfe72d0dda7595862a17c1ebb9a92b50dc22aea9b4be35a81391b6f
+F package.json f4a51cf5c8c1a9865d6c378ea34f62dee48185ead37face2350723cfc84b60f8
+F pwa/wiki-guides/assets/re-com/css/bootstrap.css 51bb8da105e8a79d8ccb429098edd9b99f5544e630d672c5d1dc6a05732a5f10
+F pwa/wiki-guides/assets/re-com/css/chosen-sprite.png e1a1bf39b45ca96a18a1ab24cb0526068e55f45c05b95cc89d40eaf4cd14bb1b
+F pwa/wiki-guides/assets/re-com/css/chosen-sprite@2x.png c818738e0c46b342b82b7d8f81f7a94838e63dc327cb4ded5e4c8bf60e2e0fae
+F pwa/wiki-guides/assets/re-com/css/material-design-iconic-font.min.css a7df7d2d15629058a92c25e6993da6ccc9c14abd4089cb1010f9ad935fb90765
+F pwa/wiki-guides/assets/re-com/css/re-com.css 9a62fd42ef1d2ad089dab402ccc37273b72705e93d78070d21c05db6e947979a
+F pwa/wiki-guides/assets/re-com/fonts/Material-Design-Iconic-Font.eot 9471399c1a7112badca1a61300e576b72cb167718bc22adc2a5085455c51471b
+F pwa/wiki-guides/assets/re-com/fonts/Material-Design-Iconic-Font.svg adf323d736c85d2ed8a71b86da3893141ca4009bff87883d35aa2e6d29a95add
+F pwa/wiki-guides/assets/re-com/fonts/Material-Design-Iconic-Font.ttf a4367a055a0f594e85465795c9079ca80b868e068873a13953c6d556b971b7c1
+F pwa/wiki-guides/assets/re-com/fonts/Material-Design-Iconic-Font.woff cf9ceab3acc7ee7779cb951c02c9ba8017c68cf5b0db3e604598dfecfc36beaf
+F pwa/wiki-guides/assets/re-com/fonts/Material-Design-Iconic-Font.woff2 c7b0f85418c94de239fb60e8c21f42a13e3d0a389b94e43cecf9f9f27365620b
+F pwa/wiki-guides/assets/re-com/scripts/detect-element-resize.js 79f272d18b334fa74b584c2bcf7fddf95c4034066eee970e067757ff93153240
+F pwa/wiki-guides/css/app.css f001b990dba6d2e38d7f5c2f2eb7ff3dea6d4db85000f0dce41e9087e5fbb45e
+F shadow-cljs.edn 75a4d7c12159432979512c90de12b1067ebfb75df54bae66038821c1ee4cbba8
+F src/main/wiki_guides/build.clj 2c69d23086873c077be02b63b8508a53f2eea3a6e614daf860c99ea82fe07e6d
+F src/main/wiki_guides/config.cljs 044562f5bec45698239743e0802b88a9095d1c1fe92ea81ef082dc54116fb3ea
+F src/main/wiki_guides/core.cljs 0d76361ecd6bcf18950973824ea6fb332a092a492ec07a1de10319bbd8b0454b
+F src/main/wiki_guides/worker/core.cljs 4db2470781af1df0f141d117642f2b26043980eefe5b321e0bf2f58c8b921c90
+F templates/index.html.mustache b8210e1bd9cb7d0d887d326f17ab48c68ff7860fb7c801e8ba129d264ee5e271
+F templates/manifest.json.mustache cabfbf9a4cea5aa5a85af00bddd7ce0b2c8ab6e952e65579fe62293dbf11dd0b
+P 0ff8bef08af4b7cc248e2420e6f224344b7e1dadb87f63f2507527c75c8ba2a7
+R 2f7c4093ef46a18e6834fb753efbf3f9
 U brian
-Z 6c22a7e19267c9c3c6dbeda410cbe8a0
+Z 60837c4ecb69738a89caabd2a4e76da7
 # Remove this line to create a well-formed Fossil manifest.

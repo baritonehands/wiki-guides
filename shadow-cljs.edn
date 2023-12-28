@@ -1,0 +1,24 @@
+;; shadow-cljs configuration
+{:source-paths
+ ["src/dev"
+  "src/main"
+  "src/test"]
+
+ :dependencies
+ [[reagent "1.2.0"]
+  [re-com "2.14.0"]
+  [re-frame "1.4.2"]
+  [akiroz.re-frame/storage "0.1.4"]
+  [com.github.spullara.mustache.java/compiler "0.9.10"]]
+
+ :builds
+ {:web     {:target     :browser
+            :asset-path "/wiki-guides"
+            :output-dir "pwa/wiki-guides"
+            :modules    {:shared {:entries []}
+                         :app    {:init-fn    wiki-guides.core/main
+                                  :depends-on #{:shared}}
+                         :worker {:init-fn    wiki-guides.worker.core/main
+                                  :depends-on #{:shared}
+                                  :web-worker true}}
+            :release    {:closure-defines {wiki-guide.config/base-url "/wiki-guide"}}}}}
