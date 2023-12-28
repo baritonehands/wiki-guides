@@ -4,6 +4,12 @@
   "src/main"
   "src/test"]
 
+ :dev-http
+ {7777 "pwa"}
+
+ :ssl
+ {}
+
  :dependencies
  [[reagent "1.2.0"]
   [re-com "2.14.0"]
@@ -12,13 +18,13 @@
   [com.github.spullara.mustache.java/compiler "0.9.10"]]
 
  :builds
- {:web     {:target     :browser
-            :asset-path "/wiki-guides"
-            :output-dir "pwa/wiki-guides"
-            :modules    {:shared {:entries []}
-                         :app    {:init-fn    wiki-guides.core/main
-                                  :depends-on #{:shared}}
-                         :worker {:init-fn    wiki-guides.worker.core/main
-                                  :depends-on #{:shared}
-                                  :web-worker true}}
-            :release    {:closure-defines {wiki-guide.config/base-url "/wiki-guide"}}}}}
+ {:web {:target     :browser
+        :asset-path "/wiki-guides"
+        :output-dir "pwa/wiki-guides"
+        :modules    {:shared {:entries []}
+                     :app    {:init-fn    wiki-guides.core/main
+                              :depends-on #{:shared}}
+                     :worker {:init-fn    wiki-guides.worker.core/main
+                              :depends-on #{:shared}
+                              :web-worker true}}
+        :release    {:closure-defines {wiki-guide.config/base-url "/wiki-guide"}}}}}
