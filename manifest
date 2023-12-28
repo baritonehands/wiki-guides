@@ -1,0 +1,8 @@
+C initial\sempty\scheck-in
+D 2023-12-28T19:27:06.219
+R d41d8cd98f00b204e9800998ecf8427e
+T *branch * trunk
+T *sym-trunk *
+U brian
+Z 6c22a7e19267c9c3c6dbeda410cbe8a0
+# Remove this line to create a well-formed Fossil manifest.
