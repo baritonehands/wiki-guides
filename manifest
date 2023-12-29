@@ -1,5 +1,5 @@
-C Refresh\sseems\sto\swork
-D 2023-12-29T04:53:51.264
+C Got\spage\sfetching
+D 2023-12-29T07:26:00.335
 F package-lock.json f2e9f7161f92ac0e0e6b32ca92ba61f50f336e7914d08cc336834537d991d590
 F package.json d0229acfd26cf0dba3f00af0e15df96fa4a11925feeaffd19b273227c586502b
 F pwa/wiki-guides/assets/css/app.css f001b990dba6d2e38d7f5c2f2eb7ff3dea6d4db85000f0dce41e9087e5fbb45e
@@ -14,19 +14,22 @@ F pwa/wiki-guides/assets/re-com/fonts/Material-Design-Iconic-Font.ttf a4367a055a
 F pwa/wiki-guides/assets/re-com/fonts/Material-Design-Iconic-Font.woff cf9ceab3acc7ee7779cb951c02c9ba8017c68cf5b0db3e604598dfecfc36beaf
 F pwa/wiki-guides/assets/re-com/fonts/Material-Design-Iconic-Font.woff2 c7b0f85418c94de239fb60e8c21f42a13e3d0a389b94e43cecf9f9f27365620b
 F pwa/wiki-guides/assets/re-com/scripts/detect-element-resize.js 79f272d18b334fa74b584c2bcf7fddf95c4034066eee970e067757ff93153240
-F shadow-cljs.edn 2f98a89dda2687f2d2b1ae4f337de9cd85d9aab9b8524b790c9ddd7e84456095
+F shadow-cljs.edn c77740fdd7d7b08468e642344e1d4638507f086cf1b27b227ea717944f4e90f6
 F src/main/wiki_guides/build.clj 2c69d23086873c077be02b63b8508a53f2eea3a6e614daf860c99ea82fe07e6d
 F src/main/wiki_guides/config.cljs 044562f5bec45698239743e0802b88a9095d1c1fe92ea81ef082dc54116fb3ea
-F src/main/wiki_guides/core.cljs cdbc24cc2e64b224f88ce6a9f02289d59192c44ad43286fcb99fc71a1f41473c
-F src/main/wiki_guides/guides.cljs 678b63bba147ce4b870a90b9e0b839df5aeedeb9a13dbfcdfc3d2eada1dec449
+F src/main/wiki_guides/core.cljs 182b0b78e79993fd30179c606002947651387d148c368f7d59c78cb63f3aabd1
+F src/main/wiki_guides/guides.cljs fc873f419d7e107a9b72ee5f5a48adfb3e7b0987f0bd499a284afb338d564062
+F src/main/wiki_guides/page.cljs 3c6ee764814f78bb262a49a6f1a4c5302933aef124fbd638ea7107d9c4d8d668
+F src/main/wiki_guides/page/controller.cljs e145da2dcfff24c4c962126694d0ca4a22d3f5e8532be98f80ec5ebe281e695f
+F src/main/wiki_guides/utils.cljs bcbcd67da9a4764ece9ea2d8d4a6d9472120d5f5381dbc40c7a8fc4d53220132
 F src/main/wiki_guides/worker/core.cljs 4db2470781af1df0f141d117642f2b26043980eefe5b321e0bf2f58c8b921c90
 F ssl/RootCA.crt 80826021ab16c28f83fda2ee725b272fd47c3b43bdd425a7bbc7c9037165f0f3
 F ssl/keystore.jks d38da8084a1cbc6ff896f648ffd0a9282de267eb7505b48b6dc9458941242d77
 F ssl/localhost.crt ca11cc47ecad3b9a2dd483b761c4f725c896af309f68bd19773779e7fff9970d
 F templates/index.html.mustache b603ceeeae01fef37021bce7c04d4c8cfc614951e2ffa0a559391b9fd707ce80
 F templates/manifest.json.mustache 85a1c87180215a7961f5adaac5d84740d5079d6c0270c9f0ac3839f8b7290133
-P 0d6456f77ef740826e345bd1b7db159b8cd433b1e55d3d9e1a4024b3fdbfc6cd
-R e87b3115b6dcea872b334bd715f80dd9
+P 9695a5aa0d4c4c3af4c109c721ceb6d6228a675f2f1af363ba144fe60b63ba3f
+R 40a98436b41036960da386392f57cc31
 U brian
-Z e00f04abbd140c84298bc6a1708e8ddd
+Z 83852b44c9ce1aeab3315536d6455497
 # Remove this line to create a well-formed Fossil manifest.

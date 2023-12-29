@@ -1,9 +1,33 @@
 (ns wiki-guides.core
-  (:require [reagent.dom.client :as rdom]
-            [wiki-guides.guides :as guides]))
+  (:require [reagent.core :as r]
+            [reagent.dom.client :as rdom]
+            [reitit.core :as router]
+            [reitit.spec :as rs]
+            [reitit.frontend.easy :as rfe]
+            [reitit.frontend.controllers :as rfc]
+            [wiki-guides.guides :as guides]
+            [wiki-guides.page :as page]
+            [wiki-guides.page.controller :as page-controller]))
+
+(defn print-handler [& args]
+  (println args))
+
+(defonce current-route (r/atom nil))
+
+(def routes
+  [["/" {:name ::root
+         :view guides/list-view}]
+   ["/*page" {:name        ::page
+              :view        page/view
+              :controllers [{:parameters page-controller/params
+                             :start      page-controller/start}]}]])
+
+(def router
+  (router/router routes {:validate rs/validate}))
 
 (defn app-component []
-  [guides/list-view])
+  (if-let [route @current-route]
+    [(:view (:data route)) route]))
 
 (defonce root (rdom/create-root (.getElementById js/document "app-container")))
 
@@ -11,4 +35,11 @@
   (rdom/render root [app-component]))
 
 (defn ^:export main []
-  (rdom/render root [app-component]))
+  (rdom/render root [app-component])
+  (rfe/start!
+    router
+    (fn [new-match]
+      (swap! current-route (fn [old-match]
+                             (if new-match
+                               (assoc new-match :controllers (rfc/apply-controllers (:controllers old-match) new-match))))))
+    {}))

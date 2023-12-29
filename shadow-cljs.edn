@@ -15,6 +15,10 @@
   [re-com "2.14.0"]
   [re-frame "1.4.2"]
   [akiroz.re-frame/storage "0.1.4"]
+  [metosin/reitit-core "0.6.0"]
+  [metosin/reitit-frontend "0.6.0"]
+  [cljs-http "0.1.48"]
+  [org.clj-commons/hickory "0.7.4"]
   [com.github.spullara.mustache.java/compiler "0.9.10"]]
 
  :builds
