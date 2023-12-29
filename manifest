@@ -1,5 +1,5 @@
-C Build\sworks
-D 2023-12-28T19:58:53.856
+C Refresh\sseems\sto\swork
+D 2023-12-29T04:53:51.264
 F package-lock.json f2e9f7161f92ac0e0e6b32ca92ba61f50f336e7914d08cc336834537d991d590
 F package.json d0229acfd26cf0dba3f00af0e15df96fa4a11925feeaffd19b273227c586502b
 F pwa/wiki-guides/assets/css/app.css f001b990dba6d2e38d7f5c2f2eb7ff3dea6d4db85000f0dce41e9087e5fbb45e
@@ -17,15 +17,16 @@ F pwa/wiki-guides/assets/re-com/scripts/detect-element-resize.js 79f272d18b334fa
 F shadow-cljs.edn 2f98a89dda2687f2d2b1ae4f337de9cd85d9aab9b8524b790c9ddd7e84456095
 F src/main/wiki_guides/build.clj 2c69d23086873c077be02b63b8508a53f2eea3a6e614daf860c99ea82fe07e6d
 F src/main/wiki_guides/config.cljs 044562f5bec45698239743e0802b88a9095d1c1fe92ea81ef082dc54116fb3ea
-F src/main/wiki_guides/core.cljs 0d76361ecd6bcf18950973824ea6fb332a092a492ec07a1de10319bbd8b0454b
+F src/main/wiki_guides/core.cljs cdbc24cc2e64b224f88ce6a9f02289d59192c44ad43286fcb99fc71a1f41473c
+F src/main/wiki_guides/guides.cljs 678b63bba147ce4b870a90b9e0b839df5aeedeb9a13dbfcdfc3d2eada1dec449
 F src/main/wiki_guides/worker/core.cljs 4db2470781af1df0f141d117642f2b26043980eefe5b321e0bf2f58c8b921c90
 F ssl/RootCA.crt 80826021ab16c28f83fda2ee725b272fd47c3b43bdd425a7bbc7c9037165f0f3
 F ssl/keystore.jks d38da8084a1cbc6ff896f648ffd0a9282de267eb7505b48b6dc9458941242d77
 F ssl/localhost.crt ca11cc47ecad3b9a2dd483b761c4f725c896af309f68bd19773779e7fff9970d
 F templates/index.html.mustache b603ceeeae01fef37021bce7c04d4c8cfc614951e2ffa0a559391b9fd707ce80
 F templates/manifest.json.mustache 85a1c87180215a7961f5adaac5d84740d5079d6c0270c9f0ac3839f8b7290133
-P 62f23661fa1ee50741207131269c564f1032fefa6e419ff9fb15c64d800f8fa8
-R dab4bea3309d632ddcfdccccc126ce2d
+P 0d6456f77ef740826e345bd1b7db159b8cd433b1e55d3d9e1a4024b3fdbfc6cd
+R e87b3115b6dcea872b334bd715f80dd9
 U brian
-Z a18c36fa743d3db4bef4aa47e10de352
+Z e00f04abbd140c84298bc6a1708e8ddd
 # Remove this line to create a well-formed Fossil manifest.
