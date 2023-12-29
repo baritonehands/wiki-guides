@@ -9,9 +9,6 @@
             [wiki-guides.page :as page]
             [wiki-guides.page.controller :as page-controller]))
 
-(defn print-handler [& args]
-  (println args))
-
 (defonce current-route (r/atom nil))
 
 (def routes
@@ -19,8 +16,7 @@
          :view guides/list-view}]
    ["/*page" {:name        ::page
               :view        page/view
-              :controllers [{:parameters page-controller/params
-                             :start      page-controller/start}]}]])
+              :controllers [page-controller/desc]}]])
 
 (def router
   (router/router routes {:validate rs/validate}))
