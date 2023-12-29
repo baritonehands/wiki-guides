@@ -4,6 +4,7 @@
             [reagent.core :as r]
             [hickory.core :as hickory]
             [hickory.select :as s]
+            [hickory.convert :as hc]
             [hickory.zip :refer [hickory-zip]]))
 
 (def params
@@ -28,19 +29,25 @@
                    relative (str "#/" parent-url href)
                    :else (str base-url (.substring href 1)))]
     (cond-> a
-      true (assoc-in [:attrs :href] new-href)
-      (and (not wiki)
-           (not relative)) (assoc-in [:attrs :target] "_blank"))))
+            true (assoc-in [:attrs :href] new-href)
+            (and (not wiki)
+                 (not relative)) (assoc-in [:attrs :target] "_blank"))))
 
-(defn rewrite-links [parent-url h]
+(defn update-tags [h selector-fn update-fn]
   (loop [zip (hickory-zip h)
-         znode (s/select-next-loc (s/tag :a) zip)]
+         znode (s/select-next-loc selector-fn zip)]
     (if znode
       (let [a (zip/node znode)
-            updated (zip/replace znode (update-href parent-url a))
-            znext (s/select-next-loc (s/tag :a) (zip/next updated))]
+            updated (zip/replace znode (update-fn a))
+            znext (s/select-next-loc selector-fn (zip/next updated))]
         (recur updated znext))
       (zip/root zip))))
+
+(defonce video-placeholder
+         {:type    :element,
+          :attrs   {:class "alert alert-info"},
+          :tag     :div,
+          :content ["Video has been removed"]})
 
 (defn start [{:keys [path]}]
   (let [url (str base-url (:page path))]
@@ -50,7 +57,10 @@
                      (hickory/as-hickory)
                      (s/select (s/tag :main))
                      (first)))
-        (.then #(reset! content (rewrite-links (:page path) %))))))
+        (.then #(-> %
+                    (update-tags (s/tag :a) (partial update-href (:page path)))
+                    (update-tags (s/class :wiki-video) (constantly video-placeholder))))
+        (.then #(reset! content %)))))
 
 (def desc
   {:parameters params

@@ -1,2 +1,12 @@
 body {
+    font-size: 16px;
+}
+
+p {
+    font-size: 16px;
+}
+
+.page-content {
+    padding: 64px;
+    max-width: 840px;
 }
