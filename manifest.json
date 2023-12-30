@@ -1,0 +1,11 @@
+{
+    "short_name": "Wiki Guides",
+    "name": "com.baritonehands.WikiGuides",
+    "icons": [
+    ],
+    "start_url": "/wiki-guides/",
+    "scope": "/wiki-guides/",
+    "background_color": "#008000",
+    "theme_color": "#008000",
+    "display": "standalone"
+}

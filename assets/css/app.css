@@ -1,0 +1,28 @@
+body {
+    font-size: 16px;
+}
+
+p {
+    font-size: 16px;
+}
+
+.page-content {
+    padding: 0px 64px 32px 64px;;
+    max-width: 900px;
+}
+
+.alert-video {
+    background-color: #F8F8F8;
+    border-color: #999999;
+    color: #666666;
+    font-size: 14px;
+}
+
+@media only screen
+  and (min-device-width: 320px)
+  and (max-device-width: 568px)
+  and (-webkit-min-device-pixel-ratio: 2) {
+  .page-content {
+      padding: 8px 32px 32px 32px;
+  }
+}
