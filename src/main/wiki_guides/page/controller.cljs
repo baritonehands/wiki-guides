@@ -35,19 +35,32 @@
 
 (defn update-tags [h selector-fn update-fn]
   (loop [zip (hickory-zip h)
-         znode (s/select-next-loc selector-fn zip)]
-    (if znode
-      (let [a (zip/node znode)
-            updated (zip/replace znode (update-fn a))
+         loc (s/select-next-loc selector-fn zip)]
+    (if loc
+      (let [node (zip/node loc)
+            updated (update-fn loc node)
             znext (s/select-next-loc selector-fn (zip/next updated))]
         (recur updated znext))
       (zip/root zip))))
 
 (defonce video-placeholder
          {:type    :element,
-          :attrs   {:class "alert alert-info"},
+          :attrs   {:class "alert alert-video"},
           :tag     :div,
           :content ["Video has been removed"]})
+
+(defn update-a-fn [parent-url]
+  (fn [loc node]
+    (zip/replace loc (update-href parent-url node))))
+
+(defn update-video [loc _]
+  (zip/replace loc video-placeholder))
+
+(defn update-blue-box [loc node]
+  (zip/replace loc (assoc-in node [:attrs :class] "alert alert-success")))
+
+(defn remove-loc [loc _]
+  (zip/remove loc))
 
 (defn start [{:keys [path]}]
   (let [url (str base-url (:page path))]
@@ -58,8 +71,11 @@
                      (s/select (s/tag :main))
                      (first)))
         (.then #(-> %
-                    (update-tags (s/tag :a) (partial update-href (:page path)))
-                    (update-tags (s/class :wiki-video) (constantly video-placeholder))))
+                    (update-tags (s/tag :a) (update-a-fn (:page path)))
+                    (update-tags (s/class :wiki-video) update-video)
+                    (update-tags (s/class :gh-blue-box) update-blue-box)
+                    (update-tags (s/or (s/class :wiki-bobble)
+                                       (s/class :feedback-container)) remove-loc)))
         (.then #(reset! content %)))))
 
 (def desc

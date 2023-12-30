@@ -1,8 +1,8 @@
-C Remove\svideos
-D 2023-12-29T20:30:15.976
+C Remove\smore\sunneeded\ssections,\simprove\sstyling
+D 2023-12-30T20:30:47.830
 F package-lock.json f2e9f7161f92ac0e0e6b32ca92ba61f50f336e7914d08cc336834537d991d590
 F package.json d0229acfd26cf0dba3f00af0e15df96fa4a11925feeaffd19b273227c586502b
-F pwa/wiki-guides/assets/css/app.css 50458c91f887938c033cc9506c3a01f25c3a79166ebe0acaa9663bd9c691f91a
+F pwa/wiki-guides/assets/css/app.css 49ddd8942b38da0068b7b67ff045fca0b51ee68af3d8a7b7f429ebe4a578e63d
 F pwa/wiki-guides/assets/re-com/css/bootstrap.css 51bb8da105e8a79d8ccb429098edd9b99f5544e630d672c5d1dc6a05732a5f10
 F pwa/wiki-guides/assets/re-com/css/chosen-sprite.png e1a1bf39b45ca96a18a1ab24cb0526068e55f45c05b95cc89d40eaf4cd14bb1b
 F pwa/wiki-guides/assets/re-com/css/chosen-sprite@2x.png c818738e0c46b342b82b7d8f81f7a94838e63dc327cb4ded5e4c8bf60e2e0fae
@@ -19,8 +19,8 @@ F src/main/wiki_guides/build.clj 2c69d23086873c077be02b63b8508a53f2eea3a6e614daf
 F src/main/wiki_guides/config.cljs 044562f5bec45698239743e0802b88a9095d1c1fe92ea81ef082dc54116fb3ea
 F src/main/wiki_guides/core.cljs 4d804838ffd4f2f846ce6459dce178ce5987013101a664820761060140fa220d
 F src/main/wiki_guides/guides.cljs fc873f419d7e107a9b72ee5f5a48adfb3e7b0987f0bd499a284afb338d564062
-F src/main/wiki_guides/page.cljs 3c6ee764814f78bb262a49a6f1a4c5302933aef124fbd638ea7107d9c4d8d668
-F src/main/wiki_guides/page/controller.cljs 29046203eb16939ea500762e97a0ff1112d3b2e677e3976e6a1fca9b8e244b4a
+F src/main/wiki_guides/page.cljs 8020a8d2a0fd8ef709755b3f38bbfea9197b142e205a2469b3ee46d40df1e314
+F src/main/wiki_guides/page/controller.cljs 9772a78842d45b95c0a3332c158c07db389c108717d6607a9ad20c1af980203b
 F src/main/wiki_guides/utils.cljs bcbcd67da9a4764ece9ea2d8d4a6d9472120d5f5381dbc40c7a8fc4d53220132
 F src/main/wiki_guides/worker/core.cljs 4db2470781af1df0f141d117642f2b26043980eefe5b321e0bf2f58c8b921c90
 F ssl/RootCA.crt 80826021ab16c28f83fda2ee725b272fd47c3b43bdd425a7bbc7c9037165f0f3
@@ -28,8 +28,8 @@ F ssl/keystore.jks d38da8084a1cbc6ff896f648ffd0a9282de267eb7505b48b6dc9458941242
 F ssl/localhost.crt ca11cc47ecad3b9a2dd483b761c4f725c896af309f68bd19773779e7fff9970d
 F templates/index.html.mustache 8d0096848c91d12eb6e58dcc4a841fe3a155082f3c2409fc27bf62231adb4feb
 F templates/manifest.json.mustache af49d227a605579d8b29b1cbe7360165de55d795d62ca2d2e276366e71e6c605
-P d5da3087cdd14392ac4cd9bd86d55564474b81a05e7daa08d7276e32e8432969
-R 01171cd5421170eb63dc26c871130fa9
+P 1f8365f8304d10ffdadb5f4d6dd05550b10ae8ad85d4d603b5815a8dcbcc3140
+R 7b7e0f7f5c8d6dca9d8e861554accfe4
 U brian
-Z b90cc291ba23746b6db624eda15e0210
+Z 5c5b799947469ee45329c0fc8a27fc3d
 # Remove this line to create a well-formed Fossil manifest.

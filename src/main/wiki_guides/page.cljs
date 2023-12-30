@@ -5,6 +5,5 @@
 
 (defn view [route]
   [:div
-   [utils/ppr-str route]
    (if @page-controller/content
      [:div {:dangerouslySetInnerHTML {:__html (render/hickory-to-html @page-controller/content)}}])])
