@@ -6,6 +6,14 @@ p {
     font-size: 16px;
 }
 
+button {
+    padding: 0;
+}
+
+img {
+    max-width: 100%;
+}
+
 .page-content {
     padding: 0px 64px 32px 64px;;
     max-width: 900px;
@@ -18,8 +26,20 @@ p {
     font-size: 14px;
 }
 
+.img-modal {
+    position: relative;
+}
+
+.img-modal .rc-md-icon-button-wrapper {
+   color: white;
+   position: absolute;
+   right: -30px;
+   top: -30px;
+   width: 30px;
+}
+
 @media only screen
-  and (min-device-width: 320px)
+  and (min-device-width: 280px)
   and (max-device-width: 568px)
   and (-webkit-min-device-pixel-ratio: 2) {
   .page-content {
