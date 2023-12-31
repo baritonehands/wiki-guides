@@ -1,8 +1,8 @@
-C Improved\simage\ssizes
-D 2023-12-31T06:59:04.606
+C Fix\scolors\sand\ssmall\sscreens
+D 2023-12-31T07:46:05.697
 F package-lock.json f2e9f7161f92ac0e0e6b32ca92ba61f50f336e7914d08cc336834537d991d590
 F package.json d0229acfd26cf0dba3f00af0e15df96fa4a11925feeaffd19b273227c586502b
-F pwa/wiki-guides/assets/css/app.css 8d787ed507dbe43637d39a6464f33a4bf8a652338de8fa8eecf5a91571765223
+F pwa/wiki-guides/assets/css/app.css adbef9ce6dec4a34c40fc163e1fd67a4d8a323ec71ee3f6f3d5a4072466f3940
 F pwa/wiki-guides/assets/re-com/css/bootstrap.css 51bb8da105e8a79d8ccb429098edd9b99f5544e630d672c5d1dc6a05732a5f10
 F pwa/wiki-guides/assets/re-com/css/chosen-sprite.png e1a1bf39b45ca96a18a1ab24cb0526068e55f45c05b95cc89d40eaf4cd14bb1b
 F pwa/wiki-guides/assets/re-com/css/chosen-sprite@2x.png c818738e0c46b342b82b7d8f81f7a94838e63dc327cb4ded5e4c8bf60e2e0fae
@@ -28,9 +28,9 @@ F ssl/RootCA.crt 80826021ab16c28f83fda2ee725b272fd47c3b43bdd425a7bbc7c9037165f0f
 F ssl/keystore.jks d38da8084a1cbc6ff896f648ffd0a9282de267eb7505b48b6dc9458941242d77
 F ssl/localhost.crt ca11cc47ecad3b9a2dd483b761c4f725c896af309f68bd19773779e7fff9970d
 F templates/index.html.mustache 8d0096848c91d12eb6e58dcc4a841fe3a155082f3c2409fc27bf62231adb4feb
-F templates/manifest.json.mustache af49d227a605579d8b29b1cbe7360165de55d795d62ca2d2e276366e71e6c605
-P 356d171c1b8d2e93becc601df1058c9a4abb077e66c78b67a20acd9503d8cd71
-R 924cad67ba9196df0b85c2a60085d25c
+F templates/manifest.json.mustache adc716dbdc1c6a843b9ba893b0d7db61de60fa88961b4000bb7db8f64c2856f0
+P ffcab54946ec63f7d9690ca02af85d61f1d2ad1d4f087cc258a65ddde7c74471
+R fbd5b606a1e5195c45590fbe3f74e2e4
 U brian
-Z b6249d50ab6f527eefd143d10eab6bfd
+Z 6b7a501ef7e87e3aa417b114ccf43d66
 # Remove this line to create a well-formed Fossil manifest.
