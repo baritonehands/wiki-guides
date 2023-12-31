@@ -10,6 +10,10 @@ button {
     padding: 0;
 }
 
+img {
+    max-width: 100%;
+}
+
 .page-content {
     padding: 0px 64px 32px 64px;;
     max-width: 900px;
@@ -20,6 +24,18 @@ button {
     border-color: #999999;
     color: #666666;
     font-size: 14px;
+}
+
+.img-modal {
+    position: relative;
+}
+
+.img-modal .rc-md-icon-button-wrapper {
+   color: white;
+   position: absolute;
+   right: -30px;
+   top: -30px;
+   width: 30px;
 }
 
 @media only screen
