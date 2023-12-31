@@ -6,6 +6,10 @@ p {
     font-size: 16px;
 }
 
+button {
+    padding: 0;
+}
+
 .page-content {
     padding: 0px 64px 32px 64px;;
     max-width: 900px;

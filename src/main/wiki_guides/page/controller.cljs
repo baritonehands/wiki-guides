@@ -5,7 +5,8 @@
             [hickory.core :as hickory]
             [hickory.select :as s]
             [hickory.convert :as hc]
-            [hickory.zip :refer [hickory-zip]]))
+            [hickory.zip :refer [hickory-zip]]
+            [wiki-guides.utils :as utils]))
 
 (def params
   {:path [:page]})
@@ -62,6 +63,10 @@
 (defn remove-loc [loc _]
   (zip/remove loc))
 
+(defn update-images [loc node]
+  (let [src (get-in node [:attrs :src])]
+    (zip/replace loc (assoc-in node [:attrs :src] (utils/image-resize src "640")))))
+
 (defn start [{:keys [path]}]
   (let [url (str base-url (:page path))]
     (-> (.fetch js/window url)
@@ -75,7 +80,8 @@
                     (update-tags (s/class :wiki-video) update-video)
                     (update-tags (s/class :gh-blue-box) update-blue-box)
                     (update-tags (s/or (s/class :wiki-bobble)
-                                       (s/class :feedback-container)) remove-loc)))
+                                       (s/class :feedback-container)) remove-loc)
+                    (update-tags (s/descendant (s/tag :button) (s/tag :img)) update-images)))
         (.then #(reset! content %)))))
 
 (def desc
