@@ -1,8 +1,10 @@
 (ns wiki-guides.page
   (:require ["react" :as react]
+            [re-com.core :refer [h-box]]
             [hickory.render :as render]
             [wiki-guides.page.controller :as page-controller]
             [wiki-guides.page.img-modal :as img-modal]
+            [wiki-guides.nav :as nav]
             [wiki-guides.utils :as utils]))
 
 (defn img-event? [event]
@@ -22,11 +24,14 @@
         (.addEventListener js/window "click" on-click)
         #(.removeEventListener js/window "click" on-click))
       #js [on-click])
-    [:div
+    [:div.page
      (if @page-controller/content
        [:div {:dangerouslySetInnerHTML {:__html (render/hickory-to-html @page-controller/content)}}])]))
 
 (defn view [route]
   [:<>
-   [:f> button-handler-view]
+   [h-box
+    :children
+    [[nav/view route]
+     [:f> button-handler-view]]]
    [img-modal/view]])

@@ -1,6 +1,7 @@
 (ns wiki-guides.guides
-  (:require [re-com.core :refer [label hyperlink-href h-box v-box]]
-            [reagent.core :as r]))
+  (:require [re-com.core :refer [label hyperlink h-box v-box]]
+            [reitit.frontend.easy :as rfe]
+            [wiki-guides.nav :as nav]))
 
 (def all
   [{:href "/wikis/the-legend-of-zelda-breath-of-the-wild"
@@ -14,19 +15,23 @@
     :icon "https://assets-prd.ignimgs.com/2022/05/24/hogwarts-legacy-button-fin-1653421326559.jpg?width=240&crop=1%3A1%2Csmart&auto=webp"}])
 
 (defn guide-view [{:keys [href title icon]}]
-  [hyperlink-href
-   :href (str "#" href)
-   :label
-   [v-box
-    :max-width "120px"
-    :style {:text-align "center"}
-    :children
-    [[:img {:src icon :alt title :style {:width "120px"}}]
-     [:span title]]]])
+  (let [hash-href (str "#" href)]
+    [hyperlink
+     :on-click (fn []
+                 (nav/set-root! hash-href)
+                 (rfe/push-state :wiki-guides.core/page {:page href}))
+     :label
+     [v-box
+      :max-width "120px"
+      :style {:text-align "center"}
+      :children
+      [[:img.guide-icon {:src icon :alt title :style {:width "120px"}}]
+       [:span.guide-title title]]]]))
 
 (defn list-view [_]
   [v-box
    :width "400px"
+   :class "guide-list"
    :children
    (for [[idx row] (map-indexed vector (partition 3 3 (repeat nil) all))]
      ^{:key idx}
