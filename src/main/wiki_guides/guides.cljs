@@ -22,10 +22,10 @@
                  (rfe/push-state :wiki-guides.core/page {:page href}))
      :label
      [v-box
-      :max-width "120px"
+      :class "guide-item"
       :style {:text-align "center"}
       :children
-      [[:img.guide-icon {:src icon :alt title :style {:width "120px"}}]
+      [[:img.guide-icon {:src icon :alt title}]
        [:span.guide-title title]]]]))
 
 (defn list-view [_]

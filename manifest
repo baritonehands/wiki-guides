@@ -1,8 +1,8 @@
-C Added\spage\sloader
-D 2024-01-01T20:46:52.384
+C Nav\smenu\sworking\son\smobile
+D 2024-01-01T21:53:20.857
 F package-lock.json f2e9f7161f92ac0e0e6b32ca92ba61f50f336e7914d08cc336834537d991d590
 F package.json d0229acfd26cf0dba3f00af0e15df96fa4a11925feeaffd19b273227c586502b
-F pwa/wiki-guides/assets/css/app.css acb3739aaedad477ca7adc12cfdd21d8a2b995aa02c5c38569f602f305f33530
+F pwa/wiki-guides/assets/css/app.css 88f09c6a19b45be8a9f0f202c4c259c531dc1c0ef0536b69fb15c82be4a33fd2
 F pwa/wiki-guides/assets/re-com/css/bootstrap.css 51bb8da105e8a79d8ccb429098edd9b99f5544e630d672c5d1dc6a05732a5f10
 F pwa/wiki-guides/assets/re-com/css/chosen-sprite.png e1a1bf39b45ca96a18a1ab24cb0526068e55f45c05b95cc89d40eaf4cd14bb1b
 F pwa/wiki-guides/assets/re-com/css/chosen-sprite@2x.png c818738e0c46b342b82b7d8f81f7a94838e63dc327cb4ded5e4c8bf60e2e0fae
@@ -18,9 +18,9 @@ F shadow-cljs.edn c77740fdd7d7b08468e642344e1d4638507f086cf1b27b227ea717944f4e90
 F src/main/wiki_guides/build.clj 2c69d23086873c077be02b63b8508a53f2eea3a6e614daf860c99ea82fe07e6d
 F src/main/wiki_guides/config.cljs 044562f5bec45698239743e0802b88a9095d1c1fe92ea81ef082dc54116fb3ea
 F src/main/wiki_guides/core.cljs 4d804838ffd4f2f846ce6459dce178ce5987013101a664820761060140fa220d
-F src/main/wiki_guides/guides.cljs e261ae6d2a5dfe7c4e48b7addc806019e6f15ac26c3cd38128406c079a4ac8a3
-F src/main/wiki_guides/nav.cljs 3779b0f35046efd6493c217ee91385115a0d57455b0d41c4d158dd927a121e59
-F src/main/wiki_guides/page.cljs 15064e9892693b89a5adac26e74427c500b44394bd30f23ae3a34608191fe768
+F src/main/wiki_guides/guides.cljs 19be1bf493bdd1031ea6bb7576de89a7cef4e7ed7fb478258f879447b3059ad6
+F src/main/wiki_guides/nav.cljs eab3cf9abc69ae9b798b9968370c332bacd4a9b8b7e8fba7e7d6acfa91c8a0f4
+F src/main/wiki_guides/page.cljs bad95739cbdd7fdd4f7e8f94b41878703af4019eb541bba1ea0ac47a8644d496
 F src/main/wiki_guides/page/controller.cljs c75246dc302b3a9a99102adb20962902f8a69825aeb680e4bcd1dbdbd35504ad
 F src/main/wiki_guides/page/img_modal.cljs e3cf6d121a3304726bb33b0f4697942a8f8863d60bcd4849f7c5b0d1e4f522e2
 F src/main/wiki_guides/utils.cljs 2bc84fc0550fb6069188434db2961b739f317a59190f357aa5603708fe298344
@@ -30,8 +30,8 @@ F ssl/keystore.jks d38da8084a1cbc6ff896f648ffd0a9282de267eb7505b48b6dc9458941242
 F ssl/localhost.crt ca11cc47ecad3b9a2dd483b761c4f725c896af309f68bd19773779e7fff9970d
 F templates/index.html.mustache 8d0096848c91d12eb6e58dcc4a841fe3a155082f3c2409fc27bf62231adb4feb
 F templates/manifest.json.mustache adc716dbdc1c6a843b9ba893b0d7db61de60fa88961b4000bb7db8f64c2856f0
-P f740593c1abea2583bca6ec65af2a34929fa6ac6ff95d797c15e49e4746d3562
-R 986e1bc43d98ea11a7a40bb2bb79b150
+P 6f01a24ab3c7bcd37414e7e878989b33c4f25af3f48400ea9b77562ae4baaf4a
+R 07dde07a7156d1017b42a1106b44f1fe
 U brian
-Z a8390e3e18cbe53832eeeaa1368c94e7
+Z 8b1021c1aaa0c3d4b82b27f63330c8b8
 # Remove this line to create a well-formed Fossil manifest.

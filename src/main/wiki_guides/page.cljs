@@ -25,6 +25,7 @@
         #(.removeEventListener js/window "click" on-click))
       #js [on-click])
     [:div.page
+     [nav/mobile-view]
      (if @page-controller/*content
        [:div {:dangerouslySetInnerHTML {:__html (render/hickory-to-html @page-controller/*content)}}]
        [throbber
@@ -35,6 +36,6 @@
   [:<>
    [h-box
     :children
-    [[nav/view route]
+    [[nav/desktop-view route]
      [:f> button-handler-view]]]
    [img-modal/view]])
