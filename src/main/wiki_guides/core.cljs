@@ -1,13 +1,15 @@
 (ns wiki-guides.core
   (:require [reagent.core :as r]
             [reagent.dom.client :as rdom]
+            [re-frame.core :refer [dispatch-sync]]
             [reitit.core :as router]
             [reitit.spec :as rs]
             [reitit.frontend.easy :as rfe]
             [reitit.frontend.controllers :as rfc]
             [wiki-guides.guides :as guides]
             [wiki-guides.page :as page]
-            [wiki-guides.page.controller :as page-controller]))
+            [wiki-guides.page.controller :as page-controller]
+            [wiki-guides.workbox.events]))
 
 (defonce current-route (r/atom nil))
 
@@ -31,6 +33,7 @@
   (rdom/render root [app-component]))
 
 (defn ^:export main []
+  (dispatch-sync [:workbox/init])
   (rdom/render root [app-component])
   (rfe/start!
     router

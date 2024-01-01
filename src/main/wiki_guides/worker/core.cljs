@@ -7,7 +7,7 @@
             [wiki-guides.config :as config]))
 
 (def cache-urls
-  (->> ["/"
+  (->> ["/index.html"
         "/assets/re-com/css/bootstrap.css"
         "/assets/re-com/css/material-design-iconic-font.min.css"
         "/assets/re-com/css/re-com.css"
@@ -50,7 +50,7 @@
 
   (wb-routing/setDefaultHandler (wb-strategies/StaleWhileRevalidate.))
 
-  (wb-precaching/precacheAndRoute #js [#js {:url (str config/base-url "/") :revision config/revision-hash}])
+  (wb-precaching/precacheAndRoute #js [#js {:url (str config/base-url "/index.html") :revision config/revision-hash}])
 
   (wb-routing/registerRoute
-    (wb-routing/NavigationRoute. (wb-precaching/createHandlerBoundToURL (str config/base-url "/")))))
+    (wb-routing/NavigationRoute. (wb-precaching/createHandlerBoundToURL (str config/base-url "/index.html")))))
