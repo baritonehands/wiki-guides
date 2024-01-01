@@ -13,7 +13,7 @@
 
 (def base-url "https://www.ign.com/")
 
-(defonce content (r/atom nil))
+(defonce *content (r/atom nil))
 
 (defn relative-url? [url]
   (not (str/starts-with? url "/")))
@@ -69,6 +69,7 @@
 
 (defn start [{:keys [path]}]
   (let [url (str base-url (:page path))]
+    (reset! *content nil)
     (-> (.fetch js/window url)
         (.then #(.text %))
         (.then #(->> (hickory/parse %)
@@ -82,7 +83,7 @@
                     (update-tags (s/or (s/class :wiki-bobble)
                                        (s/class :feedback-container)) remove-loc)
                     (update-tags (s/descendant (s/tag :button) (s/tag :img)) update-images)))
-        (.then #(reset! content %)))))
+        (.then #(reset! *content %)))))
 
 (def desc
   {:parameters params
