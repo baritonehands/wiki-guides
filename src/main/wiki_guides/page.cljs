@@ -1,6 +1,6 @@
 (ns wiki-guides.page
   (:require ["react" :as react]
-            [re-com.core :refer [h-box throbber]]
+            [re-com.core :refer [line h-box throbber]]
             [hickory.render :as render]
             [wiki-guides.page.controller :as page-controller]
             [wiki-guides.page.img-modal :as img-modal]
@@ -37,5 +37,6 @@
    [h-box
     :children
     [[nav/desktop-view route]
+     [line :size "1px" :color "#CCCCCC"]
      [:f> button-handler-view]]]
    [img-modal/view]])

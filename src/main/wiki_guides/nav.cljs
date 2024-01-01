@@ -1,7 +1,7 @@
 (ns wiki-guides.nav
   (:require [clojure.string :as str]
             [reagent.core :as r]
-            [re-com.core :refer [box button hyperlink-href line popover-anchor-wrapper popover-content-wrapper v-box]]
+            [re-com.core :refer [box button hyperlink-href popover-anchor-wrapper popover-content-wrapper v-box]]
             ["react" :as react]
             [wiki-guides.config :as config]))
 
@@ -59,9 +59,7 @@
    :size "250px"
    :class "nav-desktop"
    :child
-   [:<>
-    [line :size "1px" :color "#CCCCCC"]
-    [:f> view-with-hooks route]]])
+   [:f> view-with-hooks route]])
 
 (defn mobile-view []
   (let [*open (r/atom false)]
