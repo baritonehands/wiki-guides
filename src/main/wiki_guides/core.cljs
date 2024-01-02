@@ -9,7 +9,9 @@
             [wiki-guides.guides :as guides]
             [wiki-guides.page :as page]
             [wiki-guides.page.controller :as page-controller]
-            [wiki-guides.workbox.events]))
+            [wiki-guides.workbox.events]
+            [wiki-guides.web-workers :as web-workers]
+            [wiki-guides.fetch :as fetch]))
 
 (defonce current-route (r/atom nil))
 
@@ -33,6 +35,8 @@
   (rdom/render root [app-component]))
 
 (defn ^:export main []
+  (web-workers/init!)
+  (fetch/init!)
   (dispatch-sync [:workbox/init])
   (rdom/render root [app-component])
   (rfe/start!

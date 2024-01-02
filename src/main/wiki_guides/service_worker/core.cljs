@@ -1,4 +1,4 @@
-(ns wiki-guides.worker.core
+(ns wiki-guides.service-worker.core
   (:require ["regenerator-runtime/runtime"]
             ["workbox-core" :as wb-core]
             ["workbox-routing" :as wb-routing]

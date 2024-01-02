@@ -6,7 +6,8 @@
             [hickory.select :as s]
             [hickory.convert :as hc]
             [hickory.zip :refer [hickory-zip]]
-            [wiki-guides.utils :as utils]))
+            [wiki-guides.utils :as utils]
+            [wiki-guides.web-workers :as web-workers]))
 
 (def params
   {:path [:page]})
@@ -29,6 +30,9 @@
                    wiki (str "#" href)
                    relative (str "#/" parent-url href)
                    :else (str base-url (.substring href 1)))]
+    ;(when (or wiki relative)
+    ;  (web-workers/send-message! "fetch" #js {:parent-url parent-url
+    ;                                          :url        href}))
     (cond-> a
             true (assoc-in [:attrs :href] new-href)
             (and (not wiki)
@@ -76,6 +80,10 @@
                      (hickory/as-hickory)
                      (s/select (s/tag :main))
                      (first)))
+        (.then (fn [h]
+                 (web-workers/send-message! "process" {:url     (:page path)
+                                                       :hickory h})
+                 h))
         (.then #(-> %
                     (update-tags (s/tag :a) (update-a-fn (:page path)))
                     (update-tags (s/class :wiki-video) update-video)
