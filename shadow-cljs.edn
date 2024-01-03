@@ -22,6 +22,7 @@
   [com.github.brianium/indexed.db "1.0.3"]
   [org.clojure/core.async "1.6.673"]
   [com.cognitect/transit-cljs "0.8.280"]
+  [funcool/promesa "11.0.678"]
   [com.github.spullara.mustache.java/compiler "0.9.10"]]
 
  :builds

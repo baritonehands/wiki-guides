@@ -19,7 +19,7 @@
     [hyperlink
      :on-click (fn []
                  (nav/set-root! hash-href)
-                 (rfe/push-state :wiki-guides.core/page {:page href}))
+                 (rfe/push-state :wiki-guides.core/page {:page (.substring href 1)}))
      :label
      [v-box
       :class "guide-item"

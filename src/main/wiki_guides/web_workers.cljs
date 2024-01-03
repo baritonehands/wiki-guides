@@ -2,7 +2,8 @@
   (:require [cljs.core.async :as async :refer [go-loop <!]]
             [cognitect.transit :as transit]
             [wiki-guides.config :as config]
-            [wiki-guides.channels :as channels]))
+            [wiki-guides.channels :as channels]
+            [wiki-guides.fetch :as fetch]))
 
 (def worker-file (str config/base-url "/web-worker.js"))
 (def num-workers (.-hardwareConcurrency js/navigator))
@@ -19,10 +20,11 @@
    (.postMessage worker #js {:type type :payload (transit/write writer payload)})))
 
 (defn init! []
-  (dotimes [_ num-workers]
+  (dotimes [n num-workers]
     (let [worker (js/Worker. worker-file)
           _ (go-loop []
               (let [[type payload] (<! channels/web-workers)]
+                (println "Sending message" type "to worker" n)
                 (send-message! worker type payload))
               (recur))]
       (.addEventListener
@@ -33,6 +35,6 @@
                 payload (->> event .-data .-payload (transit/read reader))]
             (println "Message Received:" type payload)
             (case type
-              "fetch" (async/put! channels/fetch payload)
+              "fetch" (fetch/put! payload)
               :default nil))))
       (swap! workers conj worker))))

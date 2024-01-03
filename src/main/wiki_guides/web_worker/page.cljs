@@ -2,10 +2,14 @@
   (:require [cljs.core.async :as async :refer [go-loop <! >!]]
             [clojure.string :as str]
             [clojure.zip :as zip]
+            [hickory.render :as render]
             [hickory.select :as s]
             [hickory.zip :refer [hickory-zip]]
+            [promesa.core :as p]
+            [wiki-guides.store :as store]
             [wiki-guides.web-worker.message :as message]
-            [wiki-guides.utils :as utils]))
+            [wiki-guides.utils :as utils])
+  (:import goog.Uri))
 
 (def base-url "https://www.ign.com/")
 
@@ -21,7 +25,7 @@
         relative (relative-url? href)
         new-href (cond
                    wiki (str "#" href)
-                   relative (str "#/" parent-url href)
+                   relative (str "#" parent-url href)
                    :else (str base-url (.substring href 1)))]
     (cond-> a
             true (assoc-in [:attrs :href] new-href)
@@ -99,6 +103,14 @@
 
 (defonce chan (async/chan 1000))
 
+(defn fetch! [url]
+  (let [href (.getPath (Uri. url))]
+    (-> (store/fetch href)
+        (p/then (fn [page]
+                  (if-not page
+                    (message/send! "fetch" href))))
+        (p/catch (fn [_] (message/send! "fetch" href))))))
+
 (defn init! []
   (dotimes [_ num-blocks]
     (go-loop []
@@ -107,7 +119,11 @@
         (doseq [a (s/select (s/tag :a) main)
                 :let [href (get-in a [:attrs :href])]
                 :when (str/starts-with? href "#/")]
-          (message/send! "fetch" (str base-url (.substring href 2))))
+          (fetch! (.substring href 1)))
+        (store/add {:href url
+                    :title "My Title"
+                    :html (render/hickory-to-html main)
+                    :text (hickory-to-text main)})
         (recur)))))
 
 (defn put! [val]

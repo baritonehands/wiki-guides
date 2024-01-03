@@ -1,7 +1,6 @@
 (ns wiki-guides.page
   (:require ["react" :as react]
             [re-com.core :refer [line h-box throbber]]
-            [hickory.render :as render]
             [wiki-guides.page.controller :as page-controller]
             [wiki-guides.page.img-modal :as img-modal]
             [wiki-guides.nav :as nav]
@@ -27,7 +26,7 @@
     [:div.page
      [nav/mobile-view]
      (if @page-controller/*content
-       [:div {:dangerouslySetInnerHTML {:__html (render/hickory-to-html @page-controller/*content)}}]
+       [:div {:dangerouslySetInnerHTML {:__html @page-controller/*content}}]
        [throbber
         :size :large
         :style {:margin "64px auto"}])]))
