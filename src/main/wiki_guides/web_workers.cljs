@@ -2,7 +2,7 @@
   (:require [cljs.core.async :as async :refer [go-loop <!]]
             [cognitect.transit :as transit]
             [wiki-guides.config :as config]
-            [wiki-guides.channels :as channels]
+            [wiki-guides.channels :as queues]
             [wiki-guides.fetch :as fetch]))
 
 (def worker-file (str config/base-url "/web-worker.js"))
@@ -23,7 +23,7 @@
   (dotimes [n num-workers]
     (let [worker (js/Worker. worker-file)
           _ (go-loop []
-              (let [[type payload] (<! channels/web-workers)]
+              (let [[type payload] (<! queues/web-workers)]
                 (println "Sending message" type "to worker" n)
                 (send-message! worker type payload))
               (recur))]
@@ -35,6 +35,6 @@
                 payload (->> event .-data .-payload (transit/read reader))]
             (println "Message Received:" type payload)
             (case type
-              "fetch" (fetch/put! payload)
+              "fetch" (fetch/offer! payload)
               :default nil))))
       (swap! workers conj worker))))

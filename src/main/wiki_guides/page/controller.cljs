@@ -1,8 +1,9 @@
 (ns wiki-guides.page.controller
   (:require [clojure.core.async :as async]
+            [hickory.render :as render]
             [promesa.core :as p]
             [reagent.core :as r]
-            [wiki-guides.channels :as channels]
+            [wiki-guides.fetch :as fetch]
             [wiki-guides.store :as store]))
 
 (def params
@@ -18,10 +19,14 @@
     (-> (store/fetch href)
         (p/then (fn [page]
                   (if page
-                    (reset! *content (:html page))
-                    (async/put! channels/fetch href))))
+                    (:html page)
+                    (-> (fetch/promise href)
+                        (p/catch (fn [error]
+                                   (str "<h1>Page not found: " error "</h1>")))))))
+        (p/then (fn [html]
+                  (reset! *content html)))
         (p/catch (fn [_]
-                   (async/put! channels/fetch href))))))
+                   (fetch/offer! href))))))
 
 (def desc
   {:parameters params
