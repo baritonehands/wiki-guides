@@ -12,7 +12,7 @@
     (set! (. open-req -onupgradeneeded) (fn [event]
                                           (let [db (-> event .-target .-result)
                                                 store (.createObjectStore db pages-store #js{:keyPath pages-store-key})]
-                                            (.createIndex store "alias" "alias")
+                                            (.createIndex store "aliases" "aliases" #js{:multiEntry true})
                                             (.createIndex store "title" "title"))))))
 
 (defn event->result [event]
@@ -41,16 +41,25 @@
      (set! (. open-req -onerror) (promise-error-handler p))
      p)))
 
+(defn page-merge [l r]
+  (cond
+    (nil? l) r
+    (nil? r) l
+    (and (sequential? l)
+         (sequential? r)) (-> (into l r) (distinct) (vec))
+    :else r))
+
 (defn add [obj]
   (-> (with-txn #(.get % (:href obj)))
       (p/then #(js->clj (or % {}) :keywordize-keys true))
       (p/then
         (fn [orig]
-          (with-txn #(.put % (clj->js (merge orig obj))) true)))))
+          (with-txn #(.put % (clj->js (merge-with page-merge orig obj))) true)))))
 
 (defn fetch [href]
-  (-> (p/any [(with-txn #(.get % href))
-              (with-txn #(-> (.index % "alias") (.get href)))])
-      (p/then #(some-> % (js->clj :keywordize-keys true)))))
+  (-> (p/all [(with-txn #(.get % href))
+              (with-txn #(-> (.index % "aliases") (.get href)))])
+      (p/then (fn [[record1 record2]]
+                (some-> (or record1 record2) (js->clj :keywordize-keys true))))))
 
 

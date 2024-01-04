@@ -85,7 +85,7 @@
                                 :title "My Title"
                                 :html  html
                                 :text  (page-transform/hickory-to-text main)}
-                               (:redirected response) (assoc :alias url))]
+                               (:redirected response) (assoc :aliases [url]))]
             (doseq [href (page-transform/wiki-links main)]
               (prefetch! href))
             (store/add record)
@@ -104,7 +104,7 @@
                                         (:url response)
                                         url)
                              :hickory main}
-                            (:redirected response) (assoc :alias url))]
+                            (:redirected response) (assoc :aliases [url]))]
             (>! queues/web-workers ["process" msg])))
         (let [end (system-time)
               duration (- end start)]
