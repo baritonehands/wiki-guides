@@ -1,0 +1,1 @@
+out/,target/,pom.xml,pom.xml.asc,*.iml,*.jar,*.log,.shadow-cljs,.idea,.lein-*,.nrepl-*,.DS_Store,.hgignore,.hg/,.gitignore,node_modules/,pwa/wiki-guides/cljs-runtime,pwa/wiki-guides/*.js,pwa/wiki-guides/*.html,pwa/wiki-guides/*.edn,pwa/wiki-guides/*.json

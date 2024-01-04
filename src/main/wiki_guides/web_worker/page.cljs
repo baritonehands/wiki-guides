@@ -23,10 +23,10 @@
 (defn init! []
   (dotimes [_ num-blocks]
     (go-loop []
-      (let [{:keys [url hickory aliases]} (<! chan)
+      (let [{:keys [url title hickory aliases]} (<! chan)
             main (page-transform/process url hickory)
             record (cond-> {:href  url
-                            :title "My Title"
+                            :title title
                             :html  (render/hickory-to-html main)
                             :text  (page-transform/hickory-to-text main)}
                            aliases (assoc :aliases aliases))]

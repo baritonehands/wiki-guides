@@ -35,7 +35,7 @@
       (fn [{:keys [seen queue]}]
         (let [href (peek queue)]
           (aset mut 0 href)
-          {:seen  (disj seen href)
+          {:seen  seen
            :queue (pop queue)})))
     (aget mut 0)))
 
@@ -54,11 +54,21 @@
         (p/then #(async/put! chan %)))
     chan))
 
-(defn extract-main [response]
+(defn response->hickory [response]
   (->> response
        :body
        (hickory/parse)
-       (hickory/as-hickory)
+       (hickory/as-hickory)))
+
+(defn extract-title [h]
+  (->> h
+       (s/select (s/class :display-title))
+       (first)
+       (page-transform/hickory-to-text)
+       (str/trim)))
+
+(defn extract-main [h]
+  (->> h
        (s/select (s/tag :main))
        (first)))
 
@@ -76,14 +86,16 @@
       (let [response (<! (impl url))]
         (if (not (:ok response))
           (p/reject! p (:status-text response))
-          (let [main (->> response
+          (let [h (response->hickory response)
+                title (extract-title h)
+                main (->> h
                           (extract-main)
                           (page-transform/process url))
                 html (render/hickory-to-html main)
                 record (cond-> {:href  (if (:redirected response)
                                          (:url response)
                                          url)
-                                :title "My Title"
+                                :title title
                                 :html  html
                                 :text  (page-transform/hickory-to-text main)}
                                (:redirected response) (assoc :aliases [url]))]
@@ -100,10 +112,13 @@
         (if-let [url (poll!)]
           (let [_ (println "go-loop" n "to fetch:" url)
                 response (<! (impl url))
-                main (extract-main response)
+                h (response->hickory response)
+                title (extract-title h)
+                main (extract-main h)
                 msg (cond-> {:url     (if (:redirected response)
                                         (:url response)
                                         url)
+                             :title   title
                              :hickory main}
                             (:redirected response) (assoc :aliases [url]))]
             (>! queues/web-workers ["process" msg])))

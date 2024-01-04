@@ -13,7 +13,7 @@
         (.removeParameter "quality")
         (.setParameterValue "width" width))
       (str uri))
-    (catch ExceptionInfo _
+    (catch js/URIError _
       src)))
 
 (defn url-path [url]

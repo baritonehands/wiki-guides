@@ -9,6 +9,7 @@
             [wiki-guides.guides :as guides]
             [wiki-guides.page :as page]
             [wiki-guides.page.controller :as page-controller]
+            [wiki-guides.search :as search]
             [wiki-guides.store :as store]
             [wiki-guides.workbox.events]
             [wiki-guides.web-workers :as web-workers]
@@ -40,6 +41,7 @@
   (web-workers/init!)
   (fetch/init!)
   (dispatch-sync [:workbox/init])
+  (search/init!)
   (rdom/render root [app-component])
   (rfe/start!
     router

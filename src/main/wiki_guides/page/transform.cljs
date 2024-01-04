@@ -88,7 +88,8 @@
         (content->str (:content dom))
         :element
         (cond
-          (= (get-in dom [:attrs :data-omit-text]) "true") ""
+          (or (contains? (get dom :attrs) :hidden)
+              (= (get-in dom [:attrs :data-omit-text]) "true")) ""
           (not (inline-element (:tag dom))) (str " " (content->str (:content dom)) " ")
           :else (content->str (:content dom)))
         ""))))

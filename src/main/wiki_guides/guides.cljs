@@ -6,17 +6,6 @@
             [wiki-guides.nav :as nav]
             [wiki-guides.store.guide :as guide-store]))
 
-(def all
-  [{:href  "/wikis/the-legend-of-zelda-breath-of-the-wild"
-    :title "The Legend of Zelda: Breath of the Wild"
-    :icon  "https://assets-prd.ignimgs.com/2022/06/14/zelda-breath-of-the-wild-1655249167687.jpg?width=240&crop=1%3A1%2Csmart&auto=webp"}
-   {:href  "/wikis/the-legend-of-zelda-tears-of-the-kingdom"
-    :title "The Legend of Zelda: Tears of the Kingdom"
-    :icon  "https://assets-prd.ignimgs.com/2022/09/14/zelda-tears-of-the-kingdom-button-2k-1663127818777.jpg?width=240&crop=1%3A1%2Csmart&auto=webp"}
-   {:href  "/wikis/hogwarts-legacy"
-    :title "Hogwarts Legacy"
-    :icon  "https://assets-prd.ignimgs.com/2022/05/24/hogwarts-legacy-button-fin-1653421326559.jpg?width=240&crop=1%3A1%2Csmart&auto=webp"}])
-
 (defn guide-view [{:keys [href title icon]}]
   (let [hash-href (str "#" href)]
     [hyperlink

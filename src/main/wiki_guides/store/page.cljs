@@ -14,3 +14,14 @@
               (store/with-open-db+txn store/pages-store #(-> (.index % "aliases") (.get href)))])
       (p/then (fn [[record1 record2]]
                 (some-> (or record1 record2) (js->clj :keywordize-keys true))))))
+
+(defn fetch-ids [hrefs]
+  (-> (store/with-open-db+txn store/pages-store
+                              (fn [store]
+                                (for [href hrefs]
+                                  (.get store href))))
+      (p/then (fn [results]
+                (js->clj results :keywordize-keys true)))))
+
+(defn all-for-search []
+  (store/with-open-db+txn store/pages-store #(.getAll %)))

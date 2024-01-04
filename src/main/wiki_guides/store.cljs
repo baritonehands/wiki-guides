@@ -20,6 +20,13 @@
   (fn [event]
     (->> event event->error (p/reject! p))))
 
+(defn request->promise
+  ([tx-req] (request->promise (p/deferred) tx-req))
+  ([p tx-req]
+   (set! (. tx-req -onsuccess) #(p/resolve! p (event->result %)))
+   (set! (. tx-req -onerror) (promise-error-handler p))
+   p))
+
 (defn with-txn
   ([db store-name f] (with-txn db store-name f false))
   ([db store-name f writeable?] (with-txn (p/deferred) db store-name f writeable?))
@@ -27,21 +34,26 @@
    (let [tx (.transaction db store-name (if writeable? "readwrite" "readonly"))
          store (.objectStore tx store-name)
          tx-req (f store)]
-     (set! (. tx-req -onsuccess) #(p/resolve! p (event->result %)))
-     (set! (. tx-req -onerror) (promise-error-handler p))
+     (if (sequential? tx-req)
+       (-> (p/all (map request->promise tx-req))
+           (p/then #(p/resolve! p %)))
+       (request->promise p tx-req))
+     p)))
+
+(defn with-open-db
+  ([f] (with-open-db (p/deferred) f))
+  ([p f]
+   (let [open-req (.open js/indexedDB db-name db-version)]
+     (set! (. open-req -onsuccess) #(let [db (event->result %)]
+                                      (f db)))
+     (set! (. open-req -onerror) (promise-error-handler p))
      p)))
 
 (defn with-open-db+txn
   ([store-name f] (with-open-db+txn store-name f false))
   ([store-name f writeable?]
-   (let [p (p/deferred)
-         open-req (.open js/indexedDB db-name db-version)]
-     (set! (. open-req -onsuccess)
-           (fn [event]
-             (let [db (event->result event)]
-               (with-txn p db store-name f writeable?))))
-     (set! (. open-req -onerror) (promise-error-handler p))
-     p)))
+   (let [p (p/deferred)]
+     (with-open-db p #(with-txn p % store-name f writeable?)))))
 
 (defn record-merge [l r]
   (cond
