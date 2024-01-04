@@ -1,6 +1,7 @@
 (ns wiki-guides.fetch
   (:require [cljs.core.async :as async :refer [go go-loop <! >!]]
             [cljs-http.client :as http]
+            [clojure.string :as str]
             [hickory.core :as hickory]
             [hickory.render :as render]
             [hickory.select :as s]
@@ -10,7 +11,7 @@
             [wiki-guides.store :as store])
   (:import goog.Uri))
 
-(def num-blocks 4)                                         ; requests (go blocks) at a time
+(def num-blocks 4)                                          ; requests (go blocks) at a time
 
 (def base-url "https://www.ign.com")
 
@@ -38,8 +39,19 @@
     (aget mut 0)))
 
 (defn- impl [url]
-  (http/get (str base-url url)
-            {:with-credentials? false}))
+  (let [chan (async/chan)
+        p (js/fetch (str base-url url))]
+    (-> p
+        (p/then (fn [response]
+                  (p/let [body (.text response)]
+                    {:ok          (.-ok response)
+                     :status      (.-status response)
+                     :status-text (.-statusText response)
+                     :redirected  (.-redirected response)
+                     :body        body
+                     :url         (str/replace (.-url response) base-url "")})))
+        (p/then #(async/put! chan %)))
+    chan))
 
 (defn extract-main [response]
   (->> response
@@ -61,18 +73,22 @@
   (let [p (p/deferred)]
     (go
       (let [response (<! (impl url))]
-        (if (>= (:status response) 400)
-          (p/reject! p (:error-text response))
+        (if (not (:ok response))
+          (p/reject! p (:status-text response))
           (let [main (->> response
                           (extract-main)
                           (page-transform/process url))
-                html (render/hickory-to-html main)]
+                html (render/hickory-to-html main)
+                record (cond-> {:href  (if (:redirected response)
+                                         (:url response)
+                                         url)
+                                :title "My Title"
+                                :html  html
+                                :text  (page-transform/hickory-to-text main)}
+                               (:redirected response) (assoc :alias url))]
             (doseq [href (page-transform/wiki-links main)]
               (prefetch! href))
-            (store/add {:href url
-                        :title "My Title"
-                        :html html
-                        :text (page-transform/hickory-to-text main)})
+            (store/add record)
             (p/resolve! p html)))))
     p))
 
@@ -83,9 +99,13 @@
         (if-let [url (poll!)]
           (let [_ (println "go-loop" n "to fetch:" url)
                 response (<! (impl url))
-                main (extract-main response)]
-            (>! queues/web-workers ["process" {:url     url
-                                               :hickory main}])))
+                main (extract-main response)
+                msg (cond-> {:url     (if (:redirected response)
+                                        (:url response)
+                                        url)
+                             :hickory main}
+                            (:redirected response) (assoc :alias url))]
+            (>! queues/web-workers ["process" msg])))
         (let [end (system-time)
               duration (- end start)]
           (when (< duration 950)

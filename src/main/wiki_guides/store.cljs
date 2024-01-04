@@ -12,6 +12,7 @@
     (set! (. open-req -onupgradeneeded) (fn [event]
                                           (let [db (-> event .-target .-result)
                                                 store (.createObjectStore db pages-store #js{:keyPath pages-store-key})]
+                                            (.createIndex store "alias" "alias")
                                             (.createIndex store "title" "title"))))))
 
 (defn event->result [event]
@@ -41,8 +42,15 @@
      p)))
 
 (defn add [obj]
-  (with-txn #(.put % (clj->js obj)) true))
+  (-> (with-txn #(.get % (:href obj)))
+      (p/then #(js->clj (or % {}) :keywordize-keys true))
+      (p/then
+        (fn [orig]
+          (with-txn #(.put % (clj->js (merge orig obj))) true)))))
 
 (defn fetch [href]
-  (-> (with-txn #(.get % href))
+  (-> (p/any [(with-txn #(.get % href))
+              (with-txn #(-> (.index % "alias") (.get href)))])
       (p/then #(some-> % (js->clj :keywordize-keys true)))))
+
+
