@@ -8,7 +8,8 @@
             [promesa.core :as p]
             [wiki-guides.channels :as queues]
             [wiki-guides.page.transform :as page-transform]
-            [wiki-guides.store :as store])
+            [wiki-guides.store.page :as page-store]
+            [wiki-guides.utils :as utils])
   (:import goog.Uri))
 
 (def num-blocks 4)                                          ; requests (go blocks) at a time
@@ -62,8 +63,8 @@
        (first)))
 
 (defn prefetch! [url]
-  (let [href (.getPath (Uri. url))]
-    (-> (store/fetch href)
+  (let [href (utils/url-path url)]
+    (-> (page-store/fetch href)
         (p/then (fn [page]
                   (if-not page
                     (offer! href))))
@@ -88,7 +89,7 @@
                                (:redirected response) (assoc :aliases [url]))]
             (doseq [href (page-transform/wiki-links main)]
               (prefetch! href))
-            (store/add record)
+            (page-store/add record)
             (p/resolve! p html)))))
     p))
 

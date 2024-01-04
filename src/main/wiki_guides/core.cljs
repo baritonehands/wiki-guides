@@ -9,6 +9,7 @@
             [wiki-guides.guides :as guides]
             [wiki-guides.page :as page]
             [wiki-guides.page.controller :as page-controller]
+            [wiki-guides.store :as store]
             [wiki-guides.workbox.events]
             [wiki-guides.web-workers :as web-workers]
             [wiki-guides.fetch :as fetch]))
@@ -35,6 +36,7 @@
   (rdom/render root [app-component]))
 
 (defn ^:export main []
+  (store/init!)
   (web-workers/init!)
   (fetch/init!)
   (dispatch-sync [:workbox/init])

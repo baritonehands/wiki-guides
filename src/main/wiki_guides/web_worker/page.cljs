@@ -1,12 +1,9 @@
 (ns wiki-guides.web-worker.page
   (:require [cljs.core.async :as async :refer [go-loop <! >!]]
-            [clojure.string :as str]
-            [clojure.zip :as zip]
             [hickory.render :as render]
-            [hickory.select :as s]
-            [hickory.zip :refer [hickory-zip]]
             [promesa.core :as p]
-            [wiki-guides.store :as store]
+            [wiki-guides.store.page :as page-store]
+            [wiki-guides.utils :as utils]
             [wiki-guides.web-worker.message :as message]
             [wiki-guides.page.transform :as page-transform])
   (:import goog.Uri))
@@ -16,8 +13,8 @@
 (defonce chan (async/chan 1000))
 
 (defn prefetch! [url]
-  (let [href (.getPath (Uri. url))]
-    (-> (store/fetch href)
+  (let [href (utils/url-path url)]
+    (-> (page-store/fetch href)
         (p/then (fn [page]
                   (if-not page
                     (message/send! "fetch" href))))
@@ -35,7 +32,7 @@
                            aliases (assoc :aliases aliases))]
         (doseq [href (page-transform/wiki-links main)]
           (prefetch! href))
-        (store/add record)
+        (page-store/add record)
         (recur)))))
 
 (defn put! [val]

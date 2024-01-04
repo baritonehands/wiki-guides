@@ -4,7 +4,7 @@
             [promesa.core :as p]
             [reagent.core :as r]
             [wiki-guides.fetch :as fetch]
-            [wiki-guides.store :as store]))
+            [wiki-guides.store.page :as page-store]))
 
 (def params
   {:path [:page]})
@@ -16,7 +16,7 @@
 (defn start [{:keys [path]}]
   (let [href (str "/" (:page path))]
     (reset! *content nil)
-    (-> (store/fetch href)
+    (-> (page-store/fetch href)
         (p/then (fn [page]
                   (if page
                     (:html page)

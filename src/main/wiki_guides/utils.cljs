@@ -6,9 +6,18 @@
   [:pre (with-out-str (apply pprint/pprint args))])
 
 (defn image-resize [src width]
-  (let [uri (Uri. src)]
-    (doto uri
-      (.removeParameter "dpr")
-      (.removeParameter "quality")
-      (.setParameterValue "width" width))
-    (str uri)))
+  (try
+    (let [uri (Uri. src)]
+      (doto uri
+        (.removeParameter "dpr")
+        (.removeParameter "quality")
+        (.setParameterValue "width" width))
+      (str uri))
+    (catch ExceptionInfo _
+      src)))
+
+(defn url-path [url]
+  (try
+    (.getPath (Uri. url))
+    (catch js/URIError _
+      url)))

@@ -6,7 +6,6 @@
 (def reader (transit/reader :json))
 
 (defn main []
-  (store/init!)
   (page/init!)
 
   (.addEventListener
