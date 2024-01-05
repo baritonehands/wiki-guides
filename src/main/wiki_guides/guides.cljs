@@ -7,11 +7,11 @@
             [wiki-guides.store.guide :as guide-store]))
 
 (defn guide-view [{:keys [href title icon]}]
-  (let [hash-href (str "#" href)]
+  (let [hash-href (.substring href 1)]
     [hyperlink
      :on-click (fn []
                  (nav/set-root! hash-href)
-                 (rfe/push-state :wiki-guides.core/page {:page (.substring href 1)}))
+                 (rfe/push-state :wiki-guides.core/page {:page hash-href}))
      :label
      [v-box
       :class "guide-item"

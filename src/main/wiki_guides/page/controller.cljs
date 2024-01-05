@@ -4,7 +4,9 @@
             [promesa.core :as p]
             [reagent.core :as r]
             [wiki-guides.fetch :as fetch]
-            [wiki-guides.store.page :as page-store]))
+            [wiki-guides.store.guide :as guide-store]
+            [wiki-guides.store.page :as page-store]
+            [wiki-guides.utils :as utils]))
 
 (def params
   {:path [:page]})
@@ -13,20 +15,28 @@
 
 (defonce *content (r/atom nil))
 
+(defn error-content [error]
+  (str "<h1>Error on page load: " error "</h1>"))
+
 (defn start [{:keys [path]}]
   (let [href (str "/" (:page path))]
     (reset! *content nil)
-    (-> (page-store/fetch href)
-        (p/then (fn [page]
-                  (if (and page (pos? (:fetched page)))
-                    (:html page)
-                    (-> (fetch/promise href)
-                        (p/catch (fn [error]
-                                   (str "<h1>Page not found: " error "</h1>")))))))
-        (p/then (fn [html]
-                  (reset! *content html)))
-        (p/catch (fn [_]
-                   (fetch/offer! href))))))
+    (p/let [page (-> (page-store/fetch href)
+                     (p/then (fn [page]
+                               (if (and page (pos? (:fetched page)))
+                                 page
+                                 (-> (fetch/promise href)
+                                     (p/catch #(hash-map :html (error-content %)))))))
+                     (p/catch (fn [_]
+                                (reset! *content (error-content "Unexpected Error"))
+                                (fetch/offer! href))))]
+      (p/let [guide-href (utils/guide-root (:href page))
+              guide (guide-store/fetch guide-href)]
+        (guide-store/set-current! (or guide {:href    guide-href
+                                             :aliases []}))
+        (reset! *content (:html page))
+        (if (not= (:href page) href)
+          (guide-store/add-alias! (utils/guide-root href)))))))
 
 (def desc
   {:parameters params

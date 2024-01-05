@@ -17,9 +17,7 @@
   [akiroz.re-frame/storage "0.1.4"]
   [metosin/reitit-core "0.6.0"]
   [metosin/reitit-frontend "0.6.0"]
-  [cljs-http "0.1.48"]
   [org.clj-commons/hickory "0.7.4"]
-  [com.github.brianium/indexed.db "1.0.3"]
   [org.clojure/core.async "1.6.673"]
   [com.cognitect/transit-cljs "0.8.280"]
   [funcool/promesa "11.0.678"]
@@ -39,4 +37,4 @@
                      :web-worker {:init-fn    wiki-guides.web-worker.core/main
                                   :depends-on #{:shared}
                                   :web-worker true}}
-        :release    {:closure-defines {wiki-guide.config/base-url "/wiki-guide"}}}}}
+        :release    {:closure-defines {wiki-guide.config/base-url "/wiki-guides"}}}}}

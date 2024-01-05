@@ -2,7 +2,7 @@
   (:require [promesa.core :as p]))
 
 (def db-name "wiki-guides")
-(def db-version 1)
+(def db-version 2)
 
 (def pages-store-name "pages")
 (def pages-store-key "id")
@@ -74,27 +74,52 @@
           :title "Hogwarts Legacy"
           :icon  "https://assets-prd.ignimgs.com/2022/05/24/hogwarts-legacy-button-fin-1653421326559.jpg?width=240&crop=1%3A1%2Csmart&auto=webp"}])
 
+(defn create-index
+  ([store name keyPath] (create-index store name keyPath #js{}))
+  ([store name keyPath opts]
+   (let [indexes (-> store (.-indexNames) (set))]
+     (if-not (contains? indexes name)
+       (.createIndex store name keyPath opts)))))
+
+
 (defn init! []
   (let [open-req (.open js/indexedDB db-name db-version)]
     (set! (. open-req -onupgradeneeded)
           (fn [event]
             (let [db (event->result event)
-                  page-store (.createObjectStore db pages-store-name #js{:keyPath       pages-store-key
-                                                                         :autoIncrement true})
-                  guide-store (.createObjectStore db guides-store-name #js{:keyPath       guides-store-key
-                                                                           :autoIncrement true})]
-              (.createIndex page-store "href" "href" #js{:unique true})
-              (.createIndex page-store "aliases" "aliases" #js{:multiEntry true})
-              (.createIndex page-store "to_process" #js["broken" "fetched"])
+                  old-version (.-oldVersion event)
+                  txn (.-transaction open-req)]
+              (try
+                (let [
+                      stores (-> db (.-objectStoreNames) (seq) (set))
+                      page-store (if-not (contains? stores pages-store-name)
+                                   (.createObjectStore db pages-store-name #js{:keyPath       pages-store-key
+                                                                               :autoIncrement true})
+                                   (.objectStore txn pages-store-name))
+                      guide-store (if-not (contains? stores guides-store-name)
+                                    (.createObjectStore db guides-store-name #js{:keyPath       guides-store-key
+                                                                                 :autoIncrement true})
+                                    (.objectStore txn guides-store-name))]
+                  (when (< old-version 1)
+                    (create-index page-store "href" "href" #js{:unique true})
+                    (create-index page-store "aliases" "aliases" #js{:multiEntry true})
+                    (create-index page-store "to_process" #js["broken" "fetched"])
 
-              (.createIndex guide-store "aliases" "aliases" #js{:multiEntry true})
-              (.createIndex guide-store "title" "title")
+                    (create-index guide-store "aliases" "aliases" #js{:multiEntry true})
+                    (create-index guide-store "title" "title"))
+                  (create-index guide-store "href" "href" #js{:unique true})
 
-              (set! (.. guide-store -transaction -oncomplete)
-                    (fn [_]
-                      (with-txn db guides-store-name
-                                (fn [store]
-                                  (->> (for [guide guide-init-data]
-                                         (.add store guide))
-                                       (p/all)))
-                                true))))))))
+                  (when (< old-version 1)
+                    (set! (.. guide-store -transaction -oncomplete)
+                          (fn [_]
+                            (with-txn db guides-store-name
+                                      (fn [store]
+                                        (->> (for [guide guide-init-data]
+                                               (.add store guide))
+                                             (p/all)))
+                                      true)))))
+                (catch js/Object ex
+                  (.error js/console ex)
+                  (if (< old-version 1)
+                    (.deleteDatabase js/indexedDB db-name))
+                  (-> open-req (.-transaction) (.abort)))))))))

@@ -1,5 +1,6 @@
 (ns wiki-guides.utils
-  (:require [cljs.pprint :as pprint])
+  (:require [cljs.pprint :as pprint]
+            [clojure.string :as str])
   (:import goog.Uri))
 
 (defn ppr-str [& args]
@@ -21,3 +22,9 @@
     (.getPath (Uri. url))
     (catch js/URIError _
       url)))
+
+(defn guide-root [url]
+  (let [parts (->> (-> (str/replace url #"^/" "")
+                       (str/split #"/"))
+                   (take 2))]
+    (str "/" (str/join "/" parts))))

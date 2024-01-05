@@ -1,6 +1,5 @@
 (ns wiki-guides.fetch
   (:require [cljs.core.async :as async :refer [go go-loop <! >!]]
-            [cljs-http.client :as http]
             [clojure.string :as str]
             [hickory.core :as hickory]
             [hickory.render :as render]
@@ -8,6 +7,7 @@
             [promesa.core :as p]
             [wiki-guides.channels :as queues]
             [wiki-guides.page.transform :as page-transform]
+            [wiki-guides.store.guide :as guide-store]
             [wiki-guides.store.page :as page-store]
             [wiki-guides.utils :as utils])
   (:import goog.Uri))
@@ -85,6 +85,11 @@
   (let [href (utils/url-path url)]
     (offer! href)))
 
+(defn handle-alias! [response url]
+  (if (:redirected response)
+    (page-store/delete url)
+    (guide-store/add-alias! url)))
+
 (defn promise [url]
   (let [p (p/deferred)]
     (go
@@ -98,8 +103,7 @@
                                   :fetched 1}
                                  (:redirected response) (assoc :aliases [url]))]
               (page-store/add record)
-              (if (:redirected response)
-                (page-store/delete url)))
+              (handle-alias! response url))
             (p/reject! p (:status-text response)))
           (let [h (response->hickory response)
                 title (extract-title h)
@@ -119,9 +123,8 @@
             (doseq [href (page-transform/wiki-links main)]
               (prefetch! href))
             (page-store/add record)
-            (if (:redirected response)
-              (page-store/delete url))
-            (p/resolve! p html)))))
+            (handle-alias! response url)
+            (p/resolve! p record)))))
     p))
 
 (defn init! []
@@ -139,8 +142,7 @@
                                       :fetched 1}
                                      (:redirected response) (assoc :aliases [url]))]
                   (page-store/add record)
-                  (if (:redirected response)
-                    (page-store/delete url))))
+                  (handle-alias! response url)))
               (let [h (response->hickory response)
                     title (extract-title h)
                     main (extract-main h)
@@ -150,8 +152,7 @@
                                  :title   title
                                  :hickory main}
                                 (:redirected response) (assoc :aliases [url]))]
-                (if (:redirected response)
-                  (page-store/delete url))
+                (handle-alias! response url)
                 (>! queues/web-workers ["process" msg])))))
         (let [end (system-time)
               duration (- end start)]
