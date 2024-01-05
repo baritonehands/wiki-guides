@@ -54,8 +54,6 @@
                   (p/let [ok (.-ok response)
                           body (if ok
                                  (.text response))]
-                    (if (= (.-status response) 500)
-                      (println "500" ok body))
                     {:ok          ok
                      :status      (.-status response)
                      :status-text (.-statusText response)
@@ -131,8 +129,7 @@
     (go-loop []
       (let [start (system-time)]
         (if-let [url (<! (poll!))]
-          (let [_ (println "go-loop" n "to fetch:" url)
-                response (<! (impl url))]
+          (let [response (<! (impl url))]
             (if (not (:ok response))
               (when (not= (:status response) 429)
                 (let [record (cond-> {:href    (if (:redirected response)

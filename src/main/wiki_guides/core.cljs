@@ -38,8 +38,8 @@
 
 (defn ^:export main []
   (store/init!)
-  (web-workers/init!)
-  (fetch/init!)
+  ;(web-workers/init!)
+  ;(fetch/init!)
   (dispatch-sync [:workbox/init])
   (search/init!)
   (rdom/render root [app-component])

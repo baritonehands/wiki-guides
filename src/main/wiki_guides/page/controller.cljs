@@ -18,7 +18,7 @@
     (reset! *content nil)
     (-> (page-store/fetch href)
         (p/then (fn [page]
-                  (if page
+                  (if (and page (pos? (:fetched page)))
                     (:html page)
                     (-> (fetch/promise href)
                         (p/catch (fn [error]

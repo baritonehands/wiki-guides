@@ -24,7 +24,7 @@
     (let [worker (js/Worker. worker-file)
           _ (go-loop []
               (let [[type payload] (<! queues/web-workers)]
-                (println "Sending message" type "to worker" n)
+                ;(println "Sending message" type "to worker" n)
                 (send-message! worker type payload))
               (recur))]
       (.addEventListener
