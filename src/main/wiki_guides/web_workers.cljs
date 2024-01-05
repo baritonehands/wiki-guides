@@ -2,7 +2,7 @@
   (:require [cljs.core.async :as async :refer [go-loop <!]]
             [cognitect.transit :as transit]
             [wiki-guides.config :as config]
-            [wiki-guides.channels :as queues]
+            [wiki-guides.channels :as channels]
             [wiki-guides.fetch :as fetch]))
 
 (def worker-file (str config/base-url "/web-worker.js"))
@@ -23,7 +23,7 @@
   (dotimes [n num-workers]
     (let [worker (js/Worker. worker-file)
           _ (go-loop []
-              (let [[type payload] (<! queues/web-workers)]
+              (let [[type payload] (<! channels/web-workers)]
                 ;(println "Sending message" type "to worker" n)
                 (send-message! worker type payload))
               (recur))]

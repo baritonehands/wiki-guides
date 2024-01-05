@@ -36,7 +36,9 @@
   [v-box
    :children
    [[nav-item-view
-     {:href  config/base-url
+     {:on-click  (fn []
+                   (rfe/push-state :wiki-guides.core/root)
+                   (reset! guide-store/*current nil))
       :label [:<>
               [:i.zmdi.zmdi-chevron-left.rc-icon-larger]
               [:span "\u00A0\u00A0All Guides"]]}]

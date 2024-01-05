@@ -21,7 +21,8 @@
           (store/with-open-db+txn store/guides-store-name #(.put % (clj->js (merge-with store/record-merge orig obj))) true)))))
 
 (defn add-alias! [href]
-  (let [update-fn #(swap! *current update :aliases (fnil conj []) href)
+  (let [update-fn (fn []
+                    (swap! *current update :aliases (fnil #(-> %1 (conj %2) (distinct)) []) href))
         guide @*current]
     (if-not (:id guide)
       (update-fn)

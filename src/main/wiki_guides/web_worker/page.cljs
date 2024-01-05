@@ -19,16 +19,17 @@
 (defn init! []
   (dotimes [_ num-blocks]
     (go-loop []
-      (let [{:keys [url title hickory aliases]} (<! chan)
+      (let [{{:keys [url title hickory aliases]} :page
+             guide                               :guide} (<! chan)
             main (page-transform/process url hickory)
-            record (cond-> {:href  url
-                            :broken 0
+            record (cond-> {:href    url
+                            :broken  0
                             :fetched 1
-                            :title title
-                            :html  (render/hickory-to-html main)
-                            :text  (page-transform/hickory-to-text main)}
+                            :title   title
+                            :html    (render/hickory-to-html main)
+                            :text    (page-transform/hickory-to-text main)}
                            aliases (assoc :aliases aliases))]
-        (doseq [href (page-transform/wiki-links main)]
+        (doseq [href (page-transform/wiki-links guide main)]
           (prefetch! href))
         (page-store/add record)
         (recur)))))

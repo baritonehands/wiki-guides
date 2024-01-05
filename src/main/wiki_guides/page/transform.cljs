@@ -3,6 +3,7 @@
             [clojure.zip :as zip]
             [hickory.select :as s]
             [hickory.zip :refer [hickory-zip]]
+            [wiki-guides.store.guide :as guide-store]
             [wiki-guides.utils :as utils]))
 
 (def base-url "https://www.ign.com/")
@@ -94,8 +95,15 @@
           :else (content->str (:content dom)))
         ""))))
 
-(defn wiki-links [h]
-  (for [a (s/select (s/tag :a) h)
-        :let [href (get-in a [:attrs :href])]
-        :when (str/starts-with? href "#/")]
-    (.substring href 1)))
+(defn wiki-links [guide h]
+  (let [{:keys      [id aliases]
+         guide-href :href} guide]
+    (if id
+      (for [a (s/select (s/tag :a) h)
+            :let [href (get-in a [:attrs :href])]
+            :when (and (str/starts-with? href "#/")
+                       (some (fn [alias]
+                               (str/includes? (utils/guide-root (.substring href 2)) alias))
+                             (cons guide-href aliases)))]
+        (.substring href 1))
+      [])))

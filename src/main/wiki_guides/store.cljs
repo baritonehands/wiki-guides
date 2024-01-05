@@ -45,9 +45,14 @@
   ([p f]
    (let [open-req (.open js/indexedDB db-name db-version)]
      (set! (. open-req -onsuccess) #(let [db (event->result %)]
-                                      (f db)))
+                                      (try
+                                        (f db)
+                                        (catch js/Object ex
+                                          (.error js/console ex)
+                                          (-> open-req (.-transaction) (.abort))))))
      (set! (. open-req -onerror) (promise-error-handler p))
      p)))
+
 
 (defn with-open-db+txn
   ([store-name f] (with-open-db+txn store-name f false))
@@ -120,6 +125,4 @@
                                       true)))))
                 (catch js/Object ex
                   (.error js/console ex)
-                  (if (< old-version 1)
-                    (.deleteDatabase js/indexedDB db-name))
                   (-> open-req (.-transaction) (.abort)))))))))

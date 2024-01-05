@@ -88,7 +88,7 @@
 (defn handle-alias! [response url]
   (if (:redirected response)
     (page-store/delete url)
-    (guide-store/add-alias! url)))
+    (guide-store/add-alias! (utils/guide-root url))))
 
 (defn promise [url]
   (let [p (p/deferred)]
@@ -120,8 +120,9 @@
                                 :html    html
                                 :text    (page-transform/hickory-to-text main)}
                                (:redirected response) (assoc :aliases [url]))]
-            (doseq [href (page-transform/wiki-links main)]
-              (prefetch! href))
+            (if (:id @guide-store/*current)
+              (doseq [href (page-transform/wiki-links @guide-store/*current main)]
+                (prefetch! href)))
             (page-store/add record)
             (handle-alias! response url)
             (p/resolve! p record)))))
@@ -153,7 +154,8 @@
                                  :hickory main}
                                 (:redirected response) (assoc :aliases [url]))]
                 (handle-alias! response url)
-                (>! queues/web-workers ["process" msg])))))
+                (>! queues/web-workers ["process" {:guide @guide-store/*current
+                                                   :page  msg}])))))
         (let [end (system-time)
               duration (- end start)]
           (when (< duration 950)
