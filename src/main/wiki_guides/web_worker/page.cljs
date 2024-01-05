@@ -14,11 +14,7 @@
 
 (defn prefetch! [url]
   (let [href (utils/url-path url)]
-    (-> (page-store/fetch href)
-        (p/then (fn [page]
-                  (if-not page
-                    (message/send! "fetch" href))))
-        (p/catch (fn [_] (message/send! "fetch" href))))))
+    (message/send! "fetch" href)))
 
 (defn init! []
   (dotimes [_ num-blocks]
@@ -26,6 +22,8 @@
       (let [{:keys [url title hickory aliases]} (<! chan)
             main (page-transform/process url hickory)
             record (cond-> {:href  url
+                            :broken 0
+                            :fetched 1
                             :title title
                             :html  (render/hickory-to-html main)
                             :text  (page-transform/hickory-to-text main)}

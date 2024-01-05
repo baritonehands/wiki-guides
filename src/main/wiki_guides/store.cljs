@@ -4,10 +4,10 @@
 (def db-name "wiki-guides")
 (def db-version 1)
 
-(def pages-store "pages")
-(def pages-store-key "href")
+(def pages-store-name "pages")
+(def pages-store-key "id")
 
-(def guides-store "guides")
+(def guides-store-name "guides")
 (def guides-store-key "id")
 
 (defn event->result [event]
@@ -64,33 +64,35 @@
     :else r))
 
 (def guide-init-data
-  #js[#js{:href "/wikis/the-legend-of-zelda-breath-of-the-wild"
+  #js[#js{:href  "/wikis/the-legend-of-zelda-breath-of-the-wild"
           :title "The Legend of Zelda: Breath of the Wild"
-          :icon "https://assets-prd.ignimgs.com/2022/06/14/zelda-breath-of-the-wild-1655249167687.jpg?width=240&crop=1%3A1%2Csmart&auto=webp"}
-      #js{:href "/wikis/the-legend-of-zelda-tears-of-the-kingdom"
+          :icon  "https://assets-prd.ignimgs.com/2022/06/14/zelda-breath-of-the-wild-1655249167687.jpg?width=240&crop=1%3A1%2Csmart&auto=webp"}
+      #js{:href  "/wikis/the-legend-of-zelda-tears-of-the-kingdom"
           :title "The Legend of Zelda: Tears of the Kingdom"
-          :icon "https://assets-prd.ignimgs.com/2022/09/14/zelda-tears-of-the-kingdom-button-2k-1663127818777.jpg?width=240&crop=1%3A1%2Csmart&auto=webp"}
-      #js{:href "/wikis/hogwarts-legacy"
+          :icon  "https://assets-prd.ignimgs.com/2022/09/14/zelda-tears-of-the-kingdom-button-2k-1663127818777.jpg?width=240&crop=1%3A1%2Csmart&auto=webp"}
+      #js{:href  "/wikis/hogwarts-legacy"
           :title "Hogwarts Legacy"
-          :icon "https://assets-prd.ignimgs.com/2022/05/24/hogwarts-legacy-button-fin-1653421326559.jpg?width=240&crop=1%3A1%2Csmart&auto=webp"}])
+          :icon  "https://assets-prd.ignimgs.com/2022/05/24/hogwarts-legacy-button-fin-1653421326559.jpg?width=240&crop=1%3A1%2Csmart&auto=webp"}])
 
 (defn init! []
   (let [open-req (.open js/indexedDB db-name db-version)]
     (set! (. open-req -onupgradeneeded)
           (fn [event]
             (let [db (event->result event)
-                  page-store (.createObjectStore db pages-store #js{:keyPath pages-store-key})
-                  guide-store (.createObjectStore db guides-store #js{:keyPath guides-store-key
-                                                                      :autoIncrement true})]
+                  page-store (.createObjectStore db pages-store-name #js{:keyPath       pages-store-key
+                                                                         :autoIncrement true})
+                  guide-store (.createObjectStore db guides-store-name #js{:keyPath       guides-store-key
+                                                                           :autoIncrement true})]
+              (.createIndex page-store "href" "href" #js{:unique true})
               (.createIndex page-store "aliases" "aliases" #js{:multiEntry true})
-              (.createIndex page-store "title" "title")
+              (.createIndex page-store "to_process" #js["broken" "fetched"])
 
               (.createIndex guide-store "aliases" "aliases" #js{:multiEntry true})
               (.createIndex guide-store "title" "title")
 
               (set! (.. guide-store -transaction -oncomplete)
                     (fn [_]
-                      (with-txn db guides-store
+                      (with-txn db guides-store-name
                                 (fn [store]
                                   (->> (for [guide guide-init-data]
                                          (.add store guide))

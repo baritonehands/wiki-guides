@@ -16,41 +16,52 @@
 
 (def base-url "https://www.ign.com")
 
-(defonce in-progress (atom {:seen  #{}
-                            :queue #queue[]}))
+(defonce in-progress (atom #{}))
 
 (defn offer! [href]
-  (swap!
-    in-progress
-    (fn [{:keys [seen queue] :as v}]
-      (if-not (contains? seen href)
-        {:seen  (conj seen href)
-         :queue (conj queue href)}
-        v))))
+  (p/let [record (page-store/fetch href)]
+    (if-not record
+      (page-store/add
+        {:href    href
+         :broken  0
+         :fetched 0}))))
 
 (defn poll! []
-  (let [mut (array nil)]
-    (swap!
-      in-progress
-      (fn [{:keys [seen queue]}]
-        (let [href (peek queue)]
-          (aset mut 0 href)
-          {:seen  seen
-           :queue (pop queue)})))
-    (aget mut 0)))
+  (let [chan (async/chan)]
+    (p/let [records (page-store/to-process)]
+      (go
+        (let [found (array nil)]
+          (swap!
+            in-progress
+            (fn [ips]
+              (if-let [record (->> records
+                                   (remove #(contains? ips (:href %)))
+                                   (first))]
+                (do
+                  (aset found 0 (:href record))
+                  (conj ips (:href record)))
+                ips)))
+          (if (aget found 0)
+            (>! chan (aget found 0))
+            (async/close! chan)))))
+    chan))
 
 (defn- impl [url]
   (let [chan (async/chan)
         p (js/fetch (str base-url url))]
     (-> p
         (p/then (fn [response]
-                  (p/let [body (.text response)]
-                    {:ok          (.-ok response)
+                  (p/let [ok (.-ok response)
+                          body (if ok
+                                 (.text response))]
+                    (if (= (.-status response) 500)
+                      (println "500" ok body))
+                    {:ok          ok
                      :status      (.-status response)
                      :status-text (.-statusText response)
                      :redirected  (.-redirected response)
                      :body        body
-                     :url         (str/replace (.-url response) base-url "")})))
+                     :url         (some-> (.-url response) (str/replace base-url ""))})))
         (p/then #(async/put! chan %)))
     chan))
 
@@ -74,34 +85,44 @@
 
 (defn prefetch! [url]
   (let [href (utils/url-path url)]
-    (-> (page-store/fetch href)
-        (p/then (fn [page]
-                  (if-not page
-                    (offer! href))))
-        (p/catch (fn [_] (offer! href))))))
+    (offer! href)))
 
 (defn promise [url]
   (let [p (p/deferred)]
     (go
       (let [response (<! (impl url))]
         (if (not (:ok response))
-          (p/reject! p (:status-text response))
+          (when (not= (:status response) 429)
+            (let [record (cond-> {:href    (if (:redirected response)
+                                             (:url response)
+                                             url)
+                                  :broken  1
+                                  :fetched 1}
+                                 (:redirected response) (assoc :aliases [url]))]
+              (page-store/add record)
+              (if (:redirected response)
+                (page-store/delete url)))
+            (p/reject! p (:status-text response)))
           (let [h (response->hickory response)
                 title (extract-title h)
                 main (->> h
                           (extract-main)
                           (page-transform/process url))
                 html (render/hickory-to-html main)
-                record (cond-> {:href  (if (:redirected response)
-                                         (:url response)
-                                         url)
-                                :title title
-                                :html  html
-                                :text  (page-transform/hickory-to-text main)}
+                record (cond-> {:href    (if (:redirected response)
+                                           (:url response)
+                                           url)
+                                :broken  0
+                                :fetched 1
+                                :title   title
+                                :html    html
+                                :text    (page-transform/hickory-to-text main)}
                                (:redirected response) (assoc :aliases [url]))]
             (doseq [href (page-transform/wiki-links main)]
               (prefetch! href))
             (page-store/add record)
+            (if (:redirected response)
+              (page-store/delete url))
             (p/resolve! p html)))))
     p))
 
@@ -109,19 +130,32 @@
   (dotimes [n num-blocks]
     (go-loop []
       (let [start (system-time)]
-        (if-let [url (poll!)]
+        (if-let [url (<! (poll!))]
           (let [_ (println "go-loop" n "to fetch:" url)
-                response (<! (impl url))
-                h (response->hickory response)
-                title (extract-title h)
-                main (extract-main h)
-                msg (cond-> {:url     (if (:redirected response)
-                                        (:url response)
-                                        url)
-                             :title   title
-                             :hickory main}
-                            (:redirected response) (assoc :aliases [url]))]
-            (>! queues/web-workers ["process" msg])))
+                response (<! (impl url))]
+            (if (not (:ok response))
+              (when (not= (:status response) 429)
+                (let [record (cond-> {:href    (if (:redirected response)
+                                                 (:url response)
+                                                 url)
+                                      :broken  1
+                                      :fetched 1}
+                                     (:redirected response) (assoc :aliases [url]))]
+                  (page-store/add record)
+                  (if (:redirected response)
+                    (page-store/delete url))))
+              (let [h (response->hickory response)
+                    title (extract-title h)
+                    main (extract-main h)
+                    msg (cond-> {:url     (if (:redirected response)
+                                            (:url response)
+                                            url)
+                                 :title   title
+                                 :hickory main}
+                                (:redirected response) (assoc :aliases [url]))]
+                (if (:redirected response)
+                  (page-store/delete url))
+                (>! queues/web-workers ["process" msg])))))
         (let [end (system-time)
               duration (- end start)]
           (when (< duration 950)

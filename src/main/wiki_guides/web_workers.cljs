@@ -33,7 +33,6 @@
         (fn [event]
           (let [type (-> event .-data .-type)
                 payload (->> event .-data .-payload (transit/read reader))]
-            (println "Message Received:" type payload)
             (case type
               "fetch" (fetch/offer! payload)
               :default nil))))
