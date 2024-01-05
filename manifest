@@ -1,5 +1,5 @@
-C Background\sscraping\sis\salmost\sdone
-D 2024-01-05T06:41:31.444
+C Fix\smobile\sbrowser\scolor
+D 2024-01-05T06:54:22.093
 F .fossil-settings/ignore-glob 4ef6cade7dc090ade9cc9335457ddde6c886c06f4cfa73ef72a5428fe9e224b4
 F package-lock.json b1f2fb847b98bb4bf6ab10ebb938908fd1590be0a0dc9715819902cddc76f7cc
 F package.json f2ded93e0b92d94b80faff8d19760b5fbdc98be014c3068c77b3539704873322
@@ -43,10 +43,10 @@ F src/main/wiki_guides/workbox/fx.cljs 7baffc7f0dbcafdc49b75478b0a287ee987b66bc1
 F ssl/RootCA.crt 80826021ab16c28f83fda2ee725b272fd47c3b43bdd425a7bbc7c9037165f0f3
 F ssl/keystore.jks d38da8084a1cbc6ff896f648ffd0a9282de267eb7505b48b6dc9458941242d77
 F ssl/localhost.crt ca11cc47ecad3b9a2dd483b761c4f725c896af309f68bd19773779e7fff9970d
-F templates/index.html.mustache 8d0096848c91d12eb6e58dcc4a841fe3a155082f3c2409fc27bf62231adb4feb
+F templates/index.html.mustache 9b3a05b77077d8d8cf935d0f866f96e2d0cb10cf7727610ce449de74f519a789
 F templates/manifest.json.mustache adc716dbdc1c6a843b9ba893b0d7db61de60fa88961b4000bb7db8f64c2856f0
-P a44b203d01ab50a5acf33ac18e9920b6fd6afc95cf70150ed33643f1e83350ea
-R 0a4152312e6d24b36a81a56ed0669047
+P d9f2149362909537b15b5c68652264f400de29c1e615188f38c3e290794a4984
+R afed702562615f29b01bd54f43fe1c4a
 U brian
-Z cae929fb9e94a410b6a9361d913e3d3e
+Z 12761926f533747756f1e7a4d61715cb
 # Remove this line to create a well-formed Fossil manifest.
