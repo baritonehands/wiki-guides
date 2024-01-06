@@ -2,7 +2,7 @@
   (:require [clojure.string :as str]
             [promesa.core :as p]
             [reagent.core :as r]
-            [re-com.core :refer [box button hyperlink hyperlink-href popover-anchor-wrapper popover-content-wrapper v-box]]
+            [re-com.core :refer [box button checkbox hyperlink hyperlink-href line popover-anchor-wrapper popover-content-wrapper title v-box]]
             ["react" :as react]
             [reitit.frontend.easy :as rfe]
             [wiki-guides.config :as config]
@@ -15,7 +15,7 @@
 (defn set-root! [href]
   (reset! *root href))
 
-(defn nav-item-view [{:keys [href label on-click]}]
+(defn nav-item-view [{:keys [href label on-click child]}]
   [box
    :class "nav-item"
    :child
@@ -30,7 +30,9 @@
      [hyperlink-href
       :class "nav-item-link"
       :label label
-      :href href])])
+      :href href]
+
+     :else child)])
 
 (defn header-view []
   [v-box
@@ -42,10 +44,26 @@
       :label [:<>
               [:i.zmdi.zmdi-chevron-left.rc-icon-larger]
               [:span "\u00A0\u00A0All Guides"]]}]
+    [line
+     :color "#CCCCCC"]
+    [title
+     :level :level2
+     :style {:color "#337ab7"}
+     :label (:title @guide-store/*current)]
     [nav-item-view {:label "Guide Home"
                     :on-click (fn []
                                 (reset! *open false)
-                                (rfe/push-state :wiki-guides.core/page {:page @*root}))}]]])
+                                (rfe/push-state :wiki-guides.core/page {:page @*root}))}]
+    [nav-item-view {:child [:<>
+                            [checkbox
+                               :label [:<>
+                                       [:span "Download Guide"]
+                                       [:br]
+                                       [:span.nav-item-subtext
+                                        "Enables search"]]
+                               :model (:download @guide-store/*current)
+                               :on-change #(guide-store/set-download! %)]]}]]])
+
 
 (defn update-guide-root-fn [{:keys [path-params]}]
   (fn guide-root-fn! []

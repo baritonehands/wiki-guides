@@ -30,8 +30,9 @@
           (if orig
             (store/with-open-db+txn store/pages-store-name #(.delete % (.-id orig)) true))))))
 
-(defn all-for-search []
-  (store/with-open-db+txn store/pages-store-name #(.getAll %)))
+(defn all-for-search [guide-href]
+  (let [key-range (.bound js/IDBKeyRange guide-href (str guide-href "/~") true false)]
+    (store/with-open-db+txn store/pages-store-name #(-> % (.index "href") (.getAll key-range)))))
 
 (defn to-process []
   (-> (store/with-open-db+txn store/pages-store-name

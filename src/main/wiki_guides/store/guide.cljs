@@ -20,15 +20,24 @@
         (fn [orig]
           (store/with-open-db+txn store/guides-store-name #(.put % (clj->js (merge-with store/record-merge orig obj))) true)))))
 
-(defn add-alias! [href]
+(defn update-guide! [pred f & args]
   (let [update-fn (fn []
-                    (swap! *current update :aliases (fnil #(-> %1 (conj %2) (distinct)) []) href))
+                    (apply swap! *current f args))
         guide @*current]
     (if-not (:id guide)
       (update-fn)
-      (if-not (some-> guide :aliases (contains? href))
+      (if (pred guide)
         (add (update-fn))))))
 
+(defn add-alias! [href]
+  (update-guide!
+    #(not (some-> % :aliases (contains? href)))
+    update :aliases (fnil #(-> %1 (conj %2) (distinct)) []) href))
+
+(defn set-download! [v]
+  (update-guide!
+    (constantly true)
+    assoc :download v))
 
 (defn by-title []
   (-> (store/with-open-db+txn store/guides-store-name #(-> % (.index "title") (.getAll)))

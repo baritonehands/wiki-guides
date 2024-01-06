@@ -1,6 +1,7 @@
 (ns wiki-guides.search
   (:require [promesa.core :as p]
             ["flexsearch" :as flexsearch]
+            [wiki-guides.store.guide :as guide-store]
             [wiki-guides.store.page :as page-store]))
 
 (defonce fs-document
@@ -10,9 +11,11 @@
                                :index #js ["title" "text"]}}))
 
 (defn init! []
-  (-> (page-store/all-for-search)
-      (p/then #(doseq [page %]
-                 (.add fs-document (.-href page) page)))))
+  (let [guide @guide-store/*current]
+    (if (:download guide)
+      (-> (page-store/all-for-search (:href guide))
+          (p/then #(doseq [page %]
+                     (.add fs-document (.-href page) page)))))))
 
 (defn search [term]
   (-> (.searchAsync fs-document term)

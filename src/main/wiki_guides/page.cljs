@@ -1,6 +1,6 @@
 (ns wiki-guides.page
   (:require ["react" :as react]
-            [re-com.core :refer [line h-box throbber]]
+            [re-com.core :refer [line h-box scroller throbber]]
             [wiki-guides.page.controller :as page-controller]
             [wiki-guides.page.img-modal :as img-modal]
             [wiki-guides.nav :as nav]
@@ -23,13 +23,15 @@
         (.addEventListener js/window "click" on-click)
         #(.removeEventListener js/window "click" on-click))
       #js [on-click])
-    [:div.page
-     [nav/mobile-view]
-     (if @page-controller/*content
-       [:div {:dangerouslySetInnerHTML {:__html @page-controller/*content}}]
-       [throbber
-        :size :large
-        :style {:margin "64px auto"}])]))
+    [scroller
+     :child
+     [:div.page
+      [nav/mobile-view]
+      (if @page-controller/*content
+        [:div {:dangerouslySetInnerHTML {:__html @page-controller/*content}}]
+        [throbber
+         :size :large
+         :style {:margin "64px auto"}])]]))
 
 (defn view [route]
   [:<>

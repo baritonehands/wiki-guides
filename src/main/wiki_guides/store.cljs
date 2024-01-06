@@ -112,6 +112,7 @@
 
                     (create-index guide-store "aliases" "aliases" #js{:multiEntry true})
                     (create-index guide-store "title" "title"))
+
                   (create-index guide-store "href" "href" #js{:unique true})
 
                   (when (< old-version 1)
