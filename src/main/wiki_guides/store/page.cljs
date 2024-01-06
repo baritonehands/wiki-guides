@@ -19,7 +19,7 @@
   (-> (store/with-open-db+txn store/pages-store-name
                               (fn [store]
                                 (for [href hrefs]
-                                  (.get store href))))
+                                  (-> store (.index "href") (.get href)))))
       (p/then (fn [results]
                 (js->clj results :keywordize-keys true)))))
 

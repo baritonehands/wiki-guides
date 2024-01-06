@@ -6,6 +6,7 @@
             ["react" :as react]
             [reitit.frontend.easy :as rfe]
             [wiki-guides.config :as config]
+            [wiki-guides.search :as search]
             [wiki-guides.store.guide :as guide-store]
             [wiki-guides.utils :as utils]))
 
@@ -62,7 +63,13 @@
                                        [:span.nav-item-subtext
                                         "Enables search"]]
                                :model (:download @guide-store/*current)
-                               :on-change #(guide-store/set-download! %)]]}]]])
+                               :on-change #(guide-store/set-download! %)]]}]
+    [nav-item-view
+     {:on-click  (fn []
+                   (reset! search/*open true))
+      :label     [:<>
+                  [:i.zmdi.zmdi-search]
+                  [:span "\u00A0\u00A0Search"]]}]]])
 
 
 (defn update-guide-root-fn [{:keys [path-params]}]

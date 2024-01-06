@@ -4,6 +4,7 @@
             [promesa.core :as p]
             [reagent.core :as r]
             [wiki-guides.fetch :as fetch]
+            [wiki-guides.search :as search]
             [wiki-guides.store.guide :as guide-store]
             [wiki-guides.store.page :as page-store]
             [wiki-guides.utils :as utils]))
@@ -36,7 +37,8 @@
                                              :aliases []}))
         (reset! *content (:html page))
         (if (not= (:href page) href)
-          (guide-store/add-alias! (utils/guide-root href)))))))
+          (guide-store/add-alias! (utils/guide-root href)))
+        (search/init!)))))
 
 (def desc
   {:parameters params

@@ -41,7 +41,6 @@
   (web-workers/init!)
   (fetch/init!)
   (dispatch-sync [:workbox/init])
-  (search/init!)
   (rdom/render root [app-component])
   (rfe/start!
     router

@@ -4,6 +4,7 @@
             [wiki-guides.page.controller :as page-controller]
             [wiki-guides.page.img-modal :as img-modal]
             [wiki-guides.nav :as nav]
+            [wiki-guides.search :as search]
             [wiki-guides.utils :as utils]))
 
 (defn img-event? [event]
@@ -40,4 +41,5 @@
     [[nav/desktop-view route]
      [line :size "1px" :color "#CCCCCC"]
      [:f> button-handler-view]]]
-   [img-modal/view]])
+   [img-modal/view]
+   [search/dialog]])
