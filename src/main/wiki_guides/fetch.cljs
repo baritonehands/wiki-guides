@@ -90,42 +90,51 @@
     (page-store/delete url)
     (guide-store/add-alias! (utils/guide-root url))))
 
+(defn response->record! [url response process?]
+  (if (not (:ok response))
+    (when (not= (:status response) 429)
+      (let [record (cond-> {:href    (if (:redirected response)
+                                       (:url response)
+                                       url)
+                            :broken  1
+                            :fetched 1}
+                           (:redirected response) (assoc :aliases [url]))]
+        (page-store/add record)
+        (handle-alias! response url)
+        [true record]))
+    [false (:status-text response)])
+  (let [h (response->hickory response)
+        title (extract-title h)
+        main (-> h
+                 (extract-main)
+                 (cond->>
+                   process? (page-transform/process url)))
+        record (cond-> {:href    (if (:redirected response)
+                                   (:url response)
+                                   url)
+                        :broken  0
+                        :fetched 1
+                        :title   title}
+                       process? (assoc :html (render/hickory-to-html main)
+                                       :text (page-transform/hickory-to-text main))
+                       (not process?) (assoc :main main)
+                       (:redirected response) (assoc :aliases [url]))]
+    (if (and process? (:id @guide-store/*current))
+      (doseq [href (page-transform/wiki-links @guide-store/*current main)]
+        (prefetch! href)))
+    (if process?
+      (page-store/add record))
+    (handle-alias! response url)
+    [true record]))
+
 (defn promise [url]
   (let [p (p/deferred)]
     (go
       (let [response (<! (impl url))]
-        (if (not (:ok response))
-          (when (not= (:status response) 429)
-            (let [record (cond-> {:href    (if (:redirected response)
-                                             (:url response)
-                                             url)
-                                  :broken  1
-                                  :fetched 1}
-                                 (:redirected response) (assoc :aliases [url]))]
-              (page-store/add record)
-              (handle-alias! response url))
-            (p/reject! p (:status-text response)))
-          (let [h (response->hickory response)
-                title (extract-title h)
-                main (->> h
-                          (extract-main)
-                          (page-transform/process url))
-                html (render/hickory-to-html main)
-                record (cond-> {:href    (if (:redirected response)
-                                           (:url response)
-                                           url)
-                                :broken  0
-                                :fetched 1
-                                :title   title
-                                :html    html
-                                :text    (page-transform/hickory-to-text main)}
-                               (:redirected response) (assoc :aliases [url]))]
-            (if (:id @guide-store/*current)
-              (doseq [href (page-transform/wiki-links @guide-store/*current main)]
-                (prefetch! href)))
-            (page-store/add record)
-            (handle-alias! response url)
-            (p/resolve! p record)))))
+        (let [[success? record-or-error] (response->record! url response true)]
+          (if success?
+            (p/resolve! p record-or-error)
+            (p/reject! p record-or-error)))))
     p))
 
 (defn init! []
@@ -134,28 +143,15 @@
       (let [start (system-time)]
         (if-let [url (<! (poll!))]
           (let [response (<! (impl url))]
-            (if (not (:ok response))
-              (when (not= (:status response) 429)
-                (let [record (cond-> {:href    (if (:redirected response)
-                                                 (:url response)
-                                                 url)
-                                      :broken  1
-                                      :fetched 1}
-                                     (:redirected response) (assoc :aliases [url]))]
-                  (page-store/add record)
-                  (handle-alias! response url)))
-              (let [h (response->hickory response)
-                    title (extract-title h)
-                    main (extract-main h)
-                    msg (cond-> {:url     (if (:redirected response)
-                                            (:url response)
-                                            url)
-                                 :title   title
-                                 :hickory main}
-                                (:redirected response) (assoc :aliases [url]))]
-                (handle-alias! response url)
-                (>! queues/web-workers ["process" {:guide @guide-store/*current
-                                                   :page  msg}])))))
+            (let [[_ record-or-error] (response->record! url response false)]
+              (if (:ok response)
+                (let [msg (cond-> {:url     (:url record-or-error)
+                                   :title   (:title record-or-error)
+                                   :hickory (:main record-or-error)}
+                                  (:aliases record-or-error) (assoc :aliases (:aliases record-or-error)))]
+                  (>! queues/web-workers ["process" {:guide @guide-store/*current
+                                                     :page  msg}])))
+              (swap! in-progress disj url))))
         (let [end (system-time)
               duration (- end start)]
           (when (< duration 950)

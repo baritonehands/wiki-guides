@@ -10,17 +10,27 @@
 (defonce *fs-document (atom nil))
 (defonce *open (r/atom false))
 
+(defn add [href page]
+  (println "Adding" href)
+  (.add @*fs-document href page))
+
+(defn delete [href]
+  (println "Removing" href)
+  (.remove @*fs-document href))
+
 (defn init! []
-  (reset! *fs-document (flexsearch/Document.
-                         #js {:worker   true
-                              :document #js {:id    "href"
-                                             :index #js ["title" "text"]}}))
   (let [guide @guide-store/*current]
-    (if (:download guide)
+    (when (and (:download guide)
+               (nil? @*fs-document))
+      (reset! *fs-document (flexsearch/Document.
+                             #js {:worker   true
+                                  :tokenize "forward"
+                                  :stemmer true
+                                  :document #js {:id    "href"
+                                                 :index #js ["title" "text"]}}))
       (-> (page-store/all-for-search (:href guide))
           (p/then #(doseq [page %]
-                     (println "Adding" (.-href page))
-                     (.add @*fs-document (.-href page) page)))))))
+                     (add (.-href page) page)))))))
 
 (defn search [term]
   (-> (.searchAsync ^flexsearch/Document @*fs-document term)

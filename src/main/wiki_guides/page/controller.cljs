@@ -12,8 +12,6 @@
 (def params
   {:path [:page]})
 
-(def base-url "https://www.ign.com/")
-
 (defonce *content (r/atom nil))
 
 (defn error-content [error]
@@ -36,7 +34,8 @@
         (guide-store/set-current! (or guide {:href    guide-href
                                              :aliases []}))
         (reset! *content (:html page))
-        (if (not= (:href page) href)
+        (if (and (not= (:href page) href)
+                 (zero? (:broken page)))
           (guide-store/add-alias! (utils/guide-root href)))
         (search/init!)))))
 

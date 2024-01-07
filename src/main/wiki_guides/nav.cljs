@@ -1,6 +1,5 @@
 (ns wiki-guides.nav
   (:require [clojure.string :as str]
-            [promesa.core :as p]
             [reagent.core :as r]
             [re-com.core :refer [box button checkbox hyperlink hyperlink-href line popover-anchor-wrapper popover-content-wrapper title v-box]]
             ["react" :as react]
@@ -19,6 +18,7 @@
 (defn nav-item-view [{:keys [href label on-click child]}]
   [box
    :class "nav-item"
+   :attr {:on-click on-click}
    :child
    (cond
      on-click
@@ -39,43 +39,45 @@
   [v-box
    :children
    [[nav-item-view
-     {:on-click  (fn []
-                   (rfe/push-state :wiki-guides.core/root)
-                   (reset! guide-store/*current nil))
-      :label [:<>
-              [:i.zmdi.zmdi-chevron-left.rc-icon-larger]
-              [:span "\u00A0\u00A0All Guides"]]}]
+     {:on-click (fn []
+                  (rfe/push-state :wiki-guides.core/root)
+                  (reset! guide-store/*current nil)
+                  (reset! search/*fs-document nil))
+      :label    [:<>
+                 [:i.zmdi.zmdi-chevron-left.rc-icon-larger]
+                 [:span "\u00A0\u00A0All Guides"]]}]
     [line
      :color "#CCCCCC"]
     [title
      :level :level2
      :style {:color "#337ab7"}
      :label (:title @guide-store/*current)]
-    [nav-item-view {:label "Guide Home"
+    [nav-item-view {:label    "Guide Home"
                     :on-click (fn []
                                 (reset! *open false)
                                 (rfe/push-state :wiki-guides.core/page {:page @*root}))}]
     [nav-item-view {:child [:<>
                             [checkbox
-                               :label [:<>
-                                       [:span "Download Guide"]
-                                       [:br]
-                                       [:span.nav-item-subtext
-                                        "Enables search"]]
-                               :model (:download @guide-store/*current)
-                               :on-change #(guide-store/set-download! %)]]}]
+                             :label [:<>
+                                     [:span "Download Guide"]
+                                     [:br]
+                                     [:span.nav-item-subtext
+                                      "Enables search"]]
+                             :label-style {:cursor "pointer"}
+                             :model (:download @guide-store/*current)
+                             :on-change #(guide-store/set-download! %)]]}]
     [nav-item-view
-     {:on-click  (fn []
-                   (reset! search/*open true))
-      :label     [:<>
-                  [:i.zmdi.zmdi-search]
-                  [:span "\u00A0\u00A0Search"]]}]]])
+     {:on-click (fn []
+                  (reset! search/*open true))
+      :label    [:<>
+                 [:i.zmdi.zmdi-search]
+                 [:span "\u00A0\u00A0Search"]]}]]])
 
 
 (defn update-guide-root-fn [{:keys [path-params]}]
   (fn guide-root-fn! []
     (let [page-root (.substring (utils/guide-root (:page path-params)) 1)]
-      (if (and (str/starts-with? page-root "#/wikis")
+      (if (and (str/starts-with? page-root "wikis/")
                (not= page-root @*root))
         (set-root! page-root)))
     js/undefined))
