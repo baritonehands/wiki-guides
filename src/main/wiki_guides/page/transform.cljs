@@ -9,7 +9,9 @@
 (def base-url "https://www.ign.com/")
 
 (defn relative-url? [url]
-  (not (str/starts-with? url "/")))
+  (not (or (str/starts-with? url "/")
+           (str/starts-with? url "http://")
+           (str/starts-with? url "https://"))))
 
 (defn wiki-url? [url]
   (str/starts-with? url "/wikis/"))
@@ -95,15 +97,31 @@
           :else (content->str (:content dom)))
         ""))))
 
+(defn replace-aliases [href guide-href aliases]
+  (let [guide-href-slash (str guide-href "/")]
+    (reduce
+      (fn [s alias]
+        (str/replace s (str alias "/") guide-href-slash))
+      href
+      aliases)))
+
+(defn coalesce-url [url]
+  (-> (try
+        (js/decodeURIComponent url)
+        (catch js/URIError _
+          url))
+      (str/replace-all #" " "_")))
+
 (defn wiki-links [guide h]
   (let [{:keys      [id aliases]
          guide-href :href} guide]
     (if id
       (for [a (s/select (s/tag :a) h)
-            :let [href (get-in a [:attrs :href])]
+            :let [href (-> (get-in a [:attrs :href])
+                           (coalesce-url)
+                           (replace-aliases guide-href aliases))]
             :when (and (str/starts-with? href "#/")
-                       (some (fn [alias]
-                               (str/includes? (utils/guide-root (.substring href 2)) alias))
-                             (cons guide-href aliases)))]
+                       (str/includes? (str (utils/guide-root (.substring href 1)) "/")
+                                      (str guide-href "/")))]
         (.substring href 1))
       [])))

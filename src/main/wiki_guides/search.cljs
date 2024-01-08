@@ -12,7 +12,6 @@
 
 (defn delete [href]
   (when @*fs-document
-    (println "Removing" href)
     (.remove @*fs-document href)))
 
 (defn add
@@ -25,7 +24,6 @@
                (delete href))
              (add (.-href page) page))))))
   ([href page]
-   (println "Adding" href)
    (.add @*fs-document href page)))
 
 (defn init! []

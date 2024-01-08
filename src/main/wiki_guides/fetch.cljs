@@ -123,7 +123,7 @@
                                        :text (page-transform/hickory-to-text main))
                        (not process?) (assoc :main main)
                        (:redirected response) (assoc :aliases [url]))]
-    (if (and process? (:id @guide-store/*current))
+    (if (and process? (:download @guide-store/*current))
       (doseq [href (page-transform/wiki-links @guide-store/*current main)]
         (prefetch! href)))
     (when process?
