@@ -1,7 +1,8 @@
 (ns wiki-guides.nav
   (:require [clojure.string :as str]
+            [promesa.core :as p]
             [reagent.core :as r]
-            [re-com.core :refer [box button checkbox hyperlink hyperlink-href line popover-anchor-wrapper popover-content-wrapper title v-box]]
+            [re-com.core :refer [box button checkbox hyperlink hyperlink-href line popover-anchor-wrapper popover-content-wrapper progress-bar title v-box]]
             ["react" :as react]
             [reitit.frontend.easy :as rfe]
             [wiki-guides.config :as config]
@@ -38,6 +39,30 @@
 
      :else child)])
 
+(defonce *progress (r/atom [0 0]))
+
+(defn get-progress! []
+  (p/let [[progress total] (page-store/progress (:href @guide-store/*current))]
+    (reset! *progress [progress total])))
+
+(defn progress-view []
+  (let [cb (react/useCallback get-progress! #js[get-progress!])
+        [progress total] @*progress
+        percent (if (pos? total)
+                  (.toFixed (* (/ progress total) 100))
+                  0)
+        done? (= percent "100")]
+    (react/useEffect
+      (fn []
+        (let [timer (js/setInterval cb 1000)]
+          #(js/clearInterval timer)))
+      #js[cb])
+    [:<>
+     [:div.nav-item-subtext (str "Downloaded " progress " of " total (if-not done? "..."))]
+     [progress-bar
+      :model percent
+      :striped? (not done?)]]))
+
 (defn header-view []
   [v-box
    :children
@@ -55,6 +80,8 @@
      :level :level2
      :style {:color "#337ab7"}
      :label (:title @guide-store/*current)]
+    (if (:download @guide-store/*current)
+      [:f> progress-view])
     [nav-item-view {:child [:<>
                             [checkbox
                              :label [:<>

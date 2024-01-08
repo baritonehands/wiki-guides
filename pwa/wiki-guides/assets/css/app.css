@@ -54,8 +54,9 @@ td, th {
     background-color: #F8F8F8;
     border: 1px solid #CCCCCC;
     border-radius: 5px;
-    color: #333333;
-    padding: 8px 0;
+    padding: 8px 16px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .nav-item {

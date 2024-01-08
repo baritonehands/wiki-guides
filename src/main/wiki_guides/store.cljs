@@ -2,7 +2,7 @@
   (:require [promesa.core :as p]))
 
 (def db-name "wiki-guides")
-(def db-version 2)
+(def db-version 3)
 
 (def pages-store-name "pages")
 (def pages-store-key "id")
@@ -69,10 +69,12 @@
     :else r))
 
 (def guide-init-data
-  #js[#js{:href  "/wikis/the-legend-of-zelda-breath-of-the-wild"
-          :title "The Legend of Zelda: Breath of the Wild"
-          :icon  "https://assets-prd.ignimgs.com/2022/06/14/zelda-breath-of-the-wild-1655249167687.jpg?width=240&crop=1%3A1%2Csmart&auto=webp"}
+  #js[#js{:href    "/wikis/the-legend-of-zelda-breath-of-the-wild"
+          :aliases ["/wikis/the-legend-of-zelda-hd"]
+          :title   "The Legend of Zelda: Breath of the Wild"
+          :icon    "https://assets-prd.ignimgs.com/2022/06/14/zelda-breath-of-the-wild-1655249167687.jpg?width=240&crop=1%3A1%2Csmart&auto=webp"}
       #js{:href  "/wikis/the-legend-of-zelda-tears-of-the-kingdom"
+          :aliases ["/wikis/the-legend-of-zelda-breath-of-the-wild-2"]
           :title "The Legend of Zelda: Tears of the Kingdom"
           :icon  "https://assets-prd.ignimgs.com/2022/09/14/zelda-tears-of-the-kingdom-button-2k-1663127818777.jpg?width=240&crop=1%3A1%2Csmart&auto=webp"}
       #js{:href  "/wikis/hogwarts-legacy"
@@ -85,7 +87,6 @@
    (let [indexes (-> store (.-indexNames) (set))]
      (if-not (contains? indexes name)
        (.createIndex store name keyPath opts)))))
-
 
 (defn init! []
   (let [open-req (.open js/indexedDB db-name db-version)]
@@ -108,12 +109,18 @@
                   (when (< old-version 1)
                     (create-index page-store "href" "href" #js{:unique true})
                     (create-index page-store "aliases" "aliases" #js{:multiEntry true})
-                    (create-index page-store "to_process" #js["broken" "fetched"])
 
                     (create-index guide-store "aliases" "aliases" #js{:multiEntry true})
                     (create-index guide-store "title" "title"))
 
-                  (create-index guide-store "href" "href" #js{:unique true})
+                  (when (< old-version 2)
+                    (create-index guide-store "href" "href" #js{:unique true}))
+
+                  (when (contains? #{1 2} old-version)
+                    (.deleteIndex page-store "to_process"))
+
+                  (create-index page-store "guideHref" "guideHref")
+                  (create-index page-store "guideToProcess" #js["broken" "fetched" "guideHref"])
 
                   (when (< old-version 1)
                     (set! (.. guide-store -transaction -oncomplete)

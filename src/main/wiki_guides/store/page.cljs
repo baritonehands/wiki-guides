@@ -40,21 +40,25 @@
             (store/with-open-db+txn store/pages-store-name #(.delete % (.-id orig)) true))))))
 
 (defn delete-all [guide-href]
-  (let [key-range (.bound js/IDBKeyRange guide-href (str guide-href "/~") true false)]
-    (-> (store/with-open-db+txn store/pages-store-name #(-> % (.index "href") (.getAll key-range)))
-        (p/then
-          (fn [pages]
-            (store/with-open-db+txn store/pages-store-name
-                                    (fn [store]
-                                      (for [id (map #(.-id %) (seq pages))]
-                                        (.delete store id)))
-                                    true))))))
+  (-> (store/with-open-db+txn store/pages-store-name #(-> % (.index "guideHref") (.getAll guide-href)))
+      (p/then
+        (fn [pages]
+          (store/with-open-db+txn store/pages-store-name
+                                  (fn [store]
+                                    (for [id (map #(.-id %) (seq pages))]
+                                      (.delete store id)))
+                                  true)))))
 
 (defn all-for-search [guide-href]
-  (let [key-range (.bound js/IDBKeyRange guide-href (str guide-href "/~") true false)]
-    (store/with-open-db+txn store/pages-store-name #(-> % (.index "href") (.getAll key-range)))))
+  (store/with-open-db+txn store/pages-store-name #(-> % (.index "guideHref") (.getAll guide-href))))
 
-(defn to-process []
+(defn to-process [guide-href]
   (-> (store/with-open-db+txn store/pages-store-name
-                              #(-> % (.index "to_process") (.getAll #js[0 0])))
+                              #(-> % (.index "guideToProcess") (.getAll #js[0 0 guide-href])))
       (p/then #(js->clj % :keywordize-keys true))))
+
+(defn progress [guide-href]
+  (p/let [progress (to-process guide-href)
+          total (store/with-open-db+txn store/pages-store-name
+                                        #(-> % (.index "guideHref") (.getAll guide-href)))]
+    [(- (.-length total) (count progress)) (.-length total)]))

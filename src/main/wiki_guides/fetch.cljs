@@ -23,15 +23,16 @@
   (p/let [record (page-store/fetch href)]
     (if-not record
       (page-store/add
-        {:href    href
-         :broken  0
-         :fetched 0}))))
+        {:href      href
+         :guideHref (utils/guide-root href)
+         :broken    0
+         :fetched   0}))))
 
 (defn poll! []
   (if-not (:download @guide-store/*current)
     (async/timeout 9000)                                    ; + 1000 for regular loop
     (let [chan (async/chan)]
-      (p/let [records (page-store/to-process)]
+      (p/let [records (page-store/to-process (:href @guide-store/*current))]
         (go
           (let [found (array nil)]
             (swap!
@@ -97,11 +98,14 @@
 (defn response->record! [url response process?]
   (if (not (:ok response))
     (when (not= (:status response) 429)
-      (let [record (cond-> {:href    (if (:redirected response)
-                                       (:url response)
-                                       url)
-                            :broken  1
-                            :fetched 1}
+      (let [record (cond-> {:href      (if (:redirected response)
+                                         (:url response)
+                                         url)
+                            :guideHref (if (:redirected response)
+                                         (utils/guide-root (:url response))
+                                         (utils/guide-root url))
+                            :broken    1
+                            :fetched   1}
                            (:redirected response) (assoc :aliases [url]))]
         (page-store/add record)
         (handle-alias! response url)
@@ -113,12 +117,15 @@
                  (extract-main)
                  (cond->>
                    process? (page-transform/process url)))
-        record (cond-> {:href    (if (:redirected response)
-                                   (:url response)
-                                   url)
-                        :broken  0
-                        :fetched 1
-                        :title   title}
+        record (cond-> {:href      (if (:redirected response)
+                                     (:url response)
+                                     url)
+                        :guideHref (if (:redirected response)
+                                     (utils/guide-root (:url response))
+                                     (utils/guide-root url))
+                        :broken    0
+                        :fetched   1
+                        :title     title}
                        process? (assoc :html (render/hickory-to-html main)
                                        :text (page-transform/hickory-to-text main))
                        (not process?) (assoc :main main)
