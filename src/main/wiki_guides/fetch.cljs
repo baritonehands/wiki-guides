@@ -7,6 +7,7 @@
             [promesa.core :as p]
             [wiki-guides.channels :as queues]
             [wiki-guides.page.transform :as page-transform]
+            [wiki-guides.search :as search]
             [wiki-guides.store.guide :as guide-store]
             [wiki-guides.store.page :as page-store]
             [wiki-guides.utils :as utils])
@@ -27,24 +28,26 @@
          :fetched 0}))))
 
 (defn poll! []
-  (let [chan (async/chan)]
-    (p/let [records (page-store/to-process)]
-      (go
-        (let [found (array nil)]
-          (swap!
-            in-progress
-            (fn [ips]
-              (if-let [record (->> records
-                                   (remove #(contains? ips (:href %)))
-                                   (first))]
-                (do
-                  (aset found 0 (:href record))
-                  (conj ips (:href record)))
-                ips)))
-          (if (aget found 0)
-            (>! chan (aget found 0))
-            (async/close! chan)))))
-    chan))
+  (if-not (:download @guide-store/*current)
+    (async/timeout 9000)                                    ; + 1000 for regular loop
+    (let [chan (async/chan)]
+      (p/let [records (page-store/to-process)]
+        (go
+          (let [found (array nil)]
+            (swap!
+              in-progress
+              (fn [ips]
+                (if-let [record (->> records
+                                     (remove #(contains? ips (:href %)))
+                                     (first))]
+                  (do
+                    (aset found 0 (:href record))
+                    (conj ips (:href record)))
+                  ips)))
+            (if (aget found 0)
+              (>! chan (aget found 0))
+              (async/close! chan)))))
+      chan)))
 
 (defn- impl [url]
   (let [chan (async/chan)
@@ -86,8 +89,9 @@
     (offer! href)))
 
 (defn handle-alias! [response url]
-  (if (:redirected response)
+  (when (:redirected response)
     (page-store/delete url)
+    (search/delete url)
     (guide-store/add-alias! (utils/guide-root url))))
 
 (defn response->record! [url response process?]
@@ -122,8 +126,10 @@
     (if (and process? (:id @guide-store/*current))
       (doseq [href (page-transform/wiki-links @guide-store/*current main)]
         (prefetch! href)))
-    (if process?
-      (page-store/add record))
+    (when process?
+      (page-store/add record)
+      (if (:download @guide-store/*current)
+        (search/add (:href record) (clj->js record))))
     (handle-alias! response url)
     [true record]))
 
@@ -145,7 +151,7 @@
           (let [response (<! (impl url))]
             (let [[_ record-or-error] (response->record! url response false)]
               (if (:ok response)
-                (let [msg (cond-> {:url     (:url record-or-error)
+                (let [msg (cond-> {:url     (:href record-or-error)
                                    :title   (:title record-or-error)
                                    :hickory (:main record-or-error)}
                                   (:aliases record-or-error) (assoc :aliases (:aliases record-or-error)))]

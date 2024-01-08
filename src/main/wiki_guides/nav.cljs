@@ -7,6 +7,7 @@
             [wiki-guides.config :as config]
             [wiki-guides.search :as search]
             [wiki-guides.store.guide :as guide-store]
+            [wiki-guides.store.page :as page-store]
             [wiki-guides.utils :as utils]))
 
 (defonce *root (r/atom config/base-url))
@@ -18,7 +19,9 @@
 (defn nav-item-view [{:keys [href label on-click child]}]
   [box
    :class "nav-item"
-   :attr {:on-click on-click}
+   :attr (if on-click
+           {:on-click on-click}
+           {})
    :child
    (cond
      on-click
@@ -52,10 +55,6 @@
      :level :level2
      :style {:color "#337ab7"}
      :label (:title @guide-store/*current)]
-    [nav-item-view {:label    "Guide Home"
-                    :on-click (fn []
-                                (reset! *open false)
-                                (rfe/push-state :wiki-guides.core/page {:page @*root}))}]
     [nav-item-view {:child [:<>
                             [checkbox
                              :label [:<>
@@ -65,14 +64,26 @@
                                       "Enables search"]]
                              :label-style {:cursor "pointer"}
                              :model (:download @guide-store/*current)
-                             :on-change #(guide-store/set-download! %)]]}]
+                             :on-change (fn [download]
+                                          (guide-store/set-download! download)
+                                          (if-not download
+                                            (page-store/delete-all (:href @guide-store/*current))
+                                            (search/init!)))]]}]
+    [line
+     :color "#CCCCCC"
+     :style {:margin "8px 0"}]
+    [nav-item-view {:label    [:<>
+                               [:i.zmdi.zmdi-home]
+                               [:span "\u00A0Guide Home"]]
+                    :on-click (fn []
+                                (reset! *open false)
+                                (rfe/push-state :wiki-guides.core/page {:page @*root}))}]
     [nav-item-view
      {:on-click (fn []
                   (reset! search/*open true))
       :label    [:<>
                  [:i.zmdi.zmdi-search]
-                 [:span "\u00A0\u00A0Search"]]}]]])
-
+                 [:span "\u00A0Search"]]}]]])
 
 (defn update-guide-root-fn [{:keys [path-params]}]
   (fn guide-root-fn! []

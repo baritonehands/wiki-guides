@@ -16,6 +16,9 @@
   (let [href (utils/url-path url)]
     (message/send! "fetch" href)))
 
+(defn search-add! [url]
+  (message/send! "search-add" url))
+
 (defn init! []
   (dotimes [_ num-blocks]
     (go-loop []
@@ -32,7 +35,8 @@
         (doseq [href (page-transform/wiki-links guide main)]
           (prefetch! href))
         (page-store/add record)
-        (recur)))))
+        (search-add! url))
+      (recur))))
 
 (defn put! [val]
   (async/put! chan val))

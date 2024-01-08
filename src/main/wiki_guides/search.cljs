@@ -10,13 +10,23 @@
 (defonce *fs-document (atom nil))
 (defonce *open (r/atom false))
 
-(defn add [href page]
-  (println "Adding" href)
-  (.add @*fs-document href page))
-
 (defn delete [href]
-  (println "Removing" href)
-  (.remove @*fs-document href))
+  (when @*fs-document
+    (println "Removing" href)
+    (.remove @*fs-document href)))
+
+(defn add
+  ([href]
+   (when @*fs-document
+     (-> (page-store/fetch href false)
+         (p/then
+           (fn [page]
+             (when-not (= (.-href page) href)
+               (delete href))
+             (add (.-href page) page))))))
+  ([href page]
+   (println "Adding" href)
+   (.add @*fs-document href page)))
 
 (defn init! []
   (let [guide @guide-store/*current]

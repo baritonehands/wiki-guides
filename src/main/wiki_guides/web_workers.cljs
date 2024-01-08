@@ -3,7 +3,8 @@
             [cognitect.transit :as transit]
             [wiki-guides.config :as config]
             [wiki-guides.channels :as channels]
-            [wiki-guides.fetch :as fetch]))
+            [wiki-guides.fetch :as fetch]
+            [wiki-guides.search :as search]))
 
 (def worker-file (str config/base-url "/web-worker.js"))
 (def num-workers (.-hardwareConcurrency js/navigator))
@@ -24,7 +25,6 @@
     (let [worker (js/Worker. worker-file)
           _ (go-loop []
               (let [[type payload] (<! channels/web-workers)]
-                ;(println "Sending message" type "to worker" n)
                 (send-message! worker type payload))
               (recur))]
       (.addEventListener
@@ -35,5 +35,6 @@
                 payload (->> event .-data .-payload (transit/read reader))]
             (case type
               "fetch" (fetch/offer! payload)
+              "search-add" (search/add payload)
               :default nil))))
       (swap! workers conj worker))))
