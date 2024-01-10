@@ -1,7 +1,5 @@
 (ns wiki-guides.page.controller
-  (:require [clojure.core.async :as async]
-            [hickory.render :as render]
-            [promesa.core :as p]
+  (:require [promesa.core :as p]
             [reagent.core :as r]
             [wiki-guides.fetch :as fetch]
             [wiki-guides.search :as search]

@@ -107,7 +107,8 @@
                             :broken    1
                             :fetched   1}
                            (:redirected response) (assoc :aliases [url]))]
-        (page-store/add record)
+        (if (:download @guide-store/*current)
+          (page-store/add record))
         (handle-alias! response url)
         [true record]))
     [false (:status-text response)])
@@ -130,13 +131,11 @@
                                        :text (page-transform/hickory-to-text main))
                        (not process?) (assoc :main main)
                        (:redirected response) (assoc :aliases [url]))]
-    (if (and process? (:download @guide-store/*current))
+    (when (and process? (:download @guide-store/*current))
       (doseq [href (page-transform/wiki-links @guide-store/*current main)]
-        (prefetch! href)))
-    (when process?
+        (prefetch! href))
       (page-store/add record)
-      (if (:download @guide-store/*current)
-        (search/add (:href record) (clj->js record))))
+      (search/add (:href record) (clj->js record)))
     (handle-alias! response url)
     [true record]))
 

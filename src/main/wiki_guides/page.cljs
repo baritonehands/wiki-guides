@@ -13,7 +13,7 @@
     (and (= tag "IMG")
          (= parent-tag "BUTTON"))))
 
-(defn button-handler-view []
+(defn button-handler-view [route]
   (let [on-click (react/useCallback
                    (fn [event]
                      (if (img-event? event)
@@ -27,7 +27,7 @@
     [scroller
      :child
      [:div.page
-      [nav/mobile-view]
+      [nav/mobile-view route]
       (if @page-controller/*content
         [:div {:dangerouslySetInnerHTML {:__html @page-controller/*content}}]
         [throbber
@@ -40,6 +40,6 @@
     :children
     [[nav/desktop-view route]
      [line :size "1px" :color "#CCCCCC"]
-     [:f> button-handler-view]]]
+     [:f> button-handler-view route]]]
    [img-modal/view]
    [search/dialog]])

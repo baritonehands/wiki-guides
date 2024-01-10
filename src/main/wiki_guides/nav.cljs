@@ -6,9 +6,11 @@
             ["react" :as react]
             [reitit.frontend.easy :as rfe]
             [wiki-guides.config :as config]
+            [wiki-guides.fetch :as fetch]
             [wiki-guides.search :as search]
             [wiki-guides.store.guide :as guide-store]
             [wiki-guides.store.page :as page-store]
+            [wiki-guides.dialog.confirm :as confirm]
             [wiki-guides.utils :as utils]))
 
 (defonce *root (r/atom config/base-url))
@@ -30,7 +32,6 @@
       :class "nav-item-link"
       :label label
       :on-click on-click]
-
      href
      [hyperlink-href
       :class "nav-item-link"
@@ -63,54 +64,73 @@
       :model percent
       :striped? (not done?)]]))
 
-(defn header-view []
-  [v-box
-   :children
-   [[nav-item-view
-     {:on-click (fn []
-                  (rfe/push-state :wiki-guides.core/root)
-                  (reset! guide-store/*current nil)
-                  (reset! search/*fs-document nil))
-      :label    [:<>
-                 [:i.zmdi.zmdi-chevron-left.rc-icon-larger]
-                 [:span "\u00A0\u00A0All Guides"]]}]
-    [line
-     :color "#CCCCCC"]
-    [title
-     :level :level2
-     :style {:color "#337ab7"}
-     :label (:title @guide-store/*current)]
-    (if (:download @guide-store/*current)
-      [:f> progress-view])
-    [nav-item-view {:child [:<>
-                            [checkbox
-                             :label [:<>
-                                     [:span "Download Guide"]
-                                     [:br]
-                                     [:span.nav-item-subtext
-                                      "Enables search"]]
-                             :label-style {:cursor "pointer"}
-                             :model (:download @guide-store/*current)
-                             :on-change (fn [download]
-                                          (guide-store/set-download! download)
-                                          (if-not download
-                                            (page-store/delete-all (:href @guide-store/*current))
-                                            (search/init!)))]]}]
-    [line
-     :color "#CCCCCC"
-     :style {:margin "8px 0"}]
-    [nav-item-view {:label    [:<>
-                               [:i.zmdi.zmdi-home]
-                               [:span "\u00A0Guide Home"]]
-                    :on-click (fn []
-                                (reset! *open false)
-                                (rfe/push-state :wiki-guides.core/page {:page @*root}))}]
-    [nav-item-view
-     {:on-click (fn []
-                  (reset! search/*open true))
-      :label    [:<>
-                 [:i.zmdi.zmdi-search]
-                 [:span "\u00A0Search"]]}]]])
+(defn header-view [route]
+  (let [*confirm (r/atom false)]
+    (fn []
+      [:<>
+       (if @*confirm
+         [confirm/view
+          {:title "Delete Guide Data?"
+           :text "This will delete this guide's data in your browser. Are you sure?"
+           :confirm-label "Confirm"
+           :cancel-label "Cancel"
+           :on-confirm (fn []
+                         (guide-store/set-download! false)
+                         (page-store/delete-all (:href @guide-store/*current))
+                         (reset! *confirm false))
+           :on-cancel #(reset! *confirm false)}])
+       [v-box
+        :children
+        [[nav-item-view
+          {:on-click (fn []
+                       (rfe/push-state :wiki-guides.core/root)
+                       (reset! guide-store/*current nil)
+                       (reset! search/*fs-document nil))
+           :label    [:<>
+                      [:i.zmdi.zmdi-chevron-left.rc-icon-larger]
+                      [:span "\u00A0\u00A0All Guides"]]}]
+         [line
+          :color "#CCCCCC"]
+         [nav-item-view
+          {:child
+           [title
+            :level :level2
+            :class "guide-title"
+            :style {:color "#337ab7"}
+            :label (:title @guide-store/*current)]}]
+         (if (:download @guide-store/*current)
+           [:f> progress-view])
+         [nav-item-view {:child [:<>
+                                 [checkbox
+                                  :label [:<>
+                                          [:span "Download Guide"]
+                                          [:br]
+                                          [:span.nav-item-subtext
+                                           "Enables search"]]
+                                  :label-style {:cursor "pointer"}
+                                  :model (:download @guide-store/*current)
+                                  :on-change (fn [download]
+                                               (if download
+                                                 (do
+                                                   (guide-store/set-download! true)
+                                                   (search/init!)
+                                                   (fetch/promise (str "/" (-> route :path-params :page))))
+                                                 (reset! *confirm true)))]]}]
+         [line
+          :color "#CCCCCC"
+          :style {:margin "8px 0"}]
+         [nav-item-view {:label    [:<>
+                                    [:i.zmdi.zmdi-home]
+                                    [:span "\u00A0Guide Home"]]
+                         :on-click (fn []
+                                     (reset! *open false)
+                                     (rfe/push-state :wiki-guides.core/page {:page @*root}))}]
+         [nav-item-view
+          {:on-click (fn []
+                       (reset! search/*open true))
+           :label    [:<>
+                      [:i.zmdi.zmdi-search]
+                      [:span "\u00A0Search"]]}]]]])))
 
 (defn update-guide-root-fn [{:keys [path-params]}]
   (fn guide-root-fn! []
@@ -120,18 +140,18 @@
         (set-root! page-root)))
     js/undefined))
 
-(defn nav-view []
+(defn nav-view [route]
   [box
    :size "auto"
    :class "nav-container"
    :child
    [:div.nav
-    [header-view]]])
+    [header-view route]]])
 
 (defn view-with-hooks [route]
   (let [guide-root-fn! (react/useCallback (update-guide-root-fn route) #js [route])]
     (react/useEffect guide-root-fn! #js[guide-root-fn!])
-    [nav-view]))
+    [nav-view route]))
 
 (defn desktop-view [route]
   [box
@@ -140,7 +160,7 @@
    :child
    [:f> view-with-hooks route]])
 
-(defn mobile-view []
+(defn mobile-view [route]
   [popover-anchor-wrapper
    :showing? @*open
    :position :below-right
@@ -155,4 +175,4 @@
    [popover-content-wrapper
     :width "250px"
     :body
-    [nav-view]]])
+    [nav-view route]]])
