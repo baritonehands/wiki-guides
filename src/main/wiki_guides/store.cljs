@@ -70,13 +70,13 @@
 
 (def guide-init-data
   #js[#js{:href    "/wikis/the-legend-of-zelda-breath-of-the-wild"
-          :aliases ["/wikis/the-legend-of-zelda-hd"]
+          :aliases #js["/wikis/the-legend-of-zelda-hd"]
           :title   "The Legend of Zelda: Breath of the Wild"
           :icon    "https://assets-prd.ignimgs.com/2022/06/14/zelda-breath-of-the-wild-1655249167687.jpg?width=240&crop=1%3A1%2Csmart&auto=webp"}
-      #js{:href  "/wikis/the-legend-of-zelda-tears-of-the-kingdom"
-          :aliases ["/wikis/the-legend-of-zelda-breath-of-the-wild-2"]
-          :title "The Legend of Zelda: Tears of the Kingdom"
-          :icon  "https://assets-prd.ignimgs.com/2022/09/14/zelda-tears-of-the-kingdom-button-2k-1663127818777.jpg?width=240&crop=1%3A1%2Csmart&auto=webp"}
+      #js{:href    "/wikis/the-legend-of-zelda-tears-of-the-kingdom"
+          :aliases #js["/wikis/the-legend-of-zelda-breath-of-the-wild-2"]
+          :title   "The Legend of Zelda: Tears of the Kingdom"
+          :icon    "https://assets-prd.ignimgs.com/2022/09/14/zelda-tears-of-the-kingdom-button-2k-1663127818777.jpg?width=240&crop=1%3A1%2Csmart&auto=webp"}
       #js{:href  "/wikis/hogwarts-legacy"
           :title "Hogwarts Legacy"
           :icon  "https://assets-prd.ignimgs.com/2022/05/24/hogwarts-legacy-button-fin-1653421326559.jpg?width=240&crop=1%3A1%2Csmart&auto=webp"}])

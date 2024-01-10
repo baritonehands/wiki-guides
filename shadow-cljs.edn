@@ -37,4 +37,6 @@
                      :web-worker {:init-fn    wiki-guides.web-worker.core/main
                                   :depends-on #{:shared}
                                   :web-worker true}}
+        :js-options {:resolve {"flexsearch" {:target :global
+                                             :global "FlexSearch"}}}
         :release    {:closure-defines {wiki-guide.config/base-url "/wiki-guides"}}}}}

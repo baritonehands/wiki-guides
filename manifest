@@ -1,5 +1,5 @@
-C Added\sconfirmation\sdialog\sfor\sdisabling\sdownload
-D 2024-01-10T04:43:54.424
+C Resolved\sminification\sissue,\sand\sinitial\sguide\sdata\sissue
+D 2024-01-10T06:38:57.189
 F .fossil-settings/ignore-glob 4ef6cade7dc090ade9cc9335457ddde6c886c06f4cfa73ef72a5428fe9e224b4
 F package-lock.json b1f2fb847b98bb4bf6ab10ebb938908fd1590be0a0dc9715819902cddc76f7cc
 F package.json f2ded93e0b92d94b80faff8d19760b5fbdc98be014c3068c77b3539704873322
@@ -15,8 +15,8 @@ F pwa/wiki-guides/assets/re-com/fonts/Material-Design-Iconic-Font.ttf a4367a055a
 F pwa/wiki-guides/assets/re-com/fonts/Material-Design-Iconic-Font.woff cf9ceab3acc7ee7779cb951c02c9ba8017c68cf5b0db3e604598dfecfc36beaf
 F pwa/wiki-guides/assets/re-com/fonts/Material-Design-Iconic-Font.woff2 c7b0f85418c94de239fb60e8c21f42a13e3d0a389b94e43cecf9f9f27365620b
 F pwa/wiki-guides/assets/re-com/scripts/detect-element-resize.js 79f272d18b334fa74b584c2bcf7fddf95c4034066eee970e067757ff93153240
-F shadow-cljs.edn 11f20536643ac552e1c795c800c5ff52274c979e80689a69ad46401104116b9e
-F src/main/wiki_guides/build.clj 2c69d23086873c077be02b63b8508a53f2eea3a6e614daf860c99ea82fe07e6d
+F shadow-cljs.edn e2341e0c44a831341261d495e63d010c5f09a99276174484c8723551e91f21fd
+F src/main/wiki_guides/build.clj a9598c2bd81f2bc2ab30f5583a57ad0c5827a7324303c2f296f4331cfd9502c1
 F src/main/wiki_guides/channels.cljs 1c4e0c3523d35ae65a4d7693bdd367f0099b79eab5103ceeb0f11965d95f6769
 F src/main/wiki_guides/config.cljs 044562f5bec45698239743e0802b88a9095d1c1fe92ea81ef082dc54116fb3ea
 F src/main/wiki_guides/core.cljs 3207d89ed43f1d129a9c9a5b51af8f681f2f40cfcdca2443eb9ccb4f3244a2d7
@@ -28,9 +28,9 @@ F src/main/wiki_guides/page.cljs 6bb231271f47a292daf89278c96a3a3cd782e59670b9e87
 F src/main/wiki_guides/page/controller.cljs 33997d9056fd1e4771609d583303d5e62f11cd6d1c20f6c4be16d95b00104e6d
 F src/main/wiki_guides/page/img_modal.cljs e3cf6d121a3304726bb33b0f4697942a8f8863d60bcd4849f7c5b0d1e4f522e2
 F src/main/wiki_guides/page/transform.cljs 09e56d50c90112dd0b777790300e48f65ce020b19879588154b9f3ca7fdf9b89
-F src/main/wiki_guides/search.cljs 49c2a81c05edaccf76405e788819734611f06b41471a688b32a4d4ad378b4928
+F src/main/wiki_guides/search.cljs d46a4dcda4002bfee95b311bb9e08d0439865b8c93f1a5e324ba2fffb3bbdc00
 F src/main/wiki_guides/service_worker/core.cljs f00b05dbdbb909c2c73766048b3520de642cf55a2b66f8c9e5f837b93033530e
-F src/main/wiki_guides/store.cljs f6ebe4c2e3b89ce2d1820da8f2f72ff9a6180716cba10316d94ea367f82b4128
+F src/main/wiki_guides/store.cljs cc19ae9053fa7d48c8b09735b8c46959428d224ffdd970a941df52682ec3434d
 F src/main/wiki_guides/store/guide.cljs 994eef533a364e71ba2ea4a5eb91ce21d427d84ffdb97a32fd95e2592043b588
 F src/main/wiki_guides/store/page.cljs cfd17620fe08612a0411ee82d2129ea72667eaf0347b09ac54622858d9edbbb2
 F src/main/wiki_guides/utils.cljs b3a11a9df71d550e987fd5ffa29e643ea500b50e556c5ffcd17595678533b7e8
@@ -44,10 +44,10 @@ F src/main/wiki_guides/workbox/fx.cljs 7baffc7f0dbcafdc49b75478b0a287ee987b66bc1
 F ssl/RootCA.crt 80826021ab16c28f83fda2ee725b272fd47c3b43bdd425a7bbc7c9037165f0f3
 F ssl/keystore.jks d38da8084a1cbc6ff896f648ffd0a9282de267eb7505b48b6dc9458941242d77
 F ssl/localhost.crt ca11cc47ecad3b9a2dd483b761c4f725c896af309f68bd19773779e7fff9970d
-F templates/index.html.mustache 9b3a05b77077d8d8cf935d0f866f96e2d0cb10cf7727610ce449de74f519a789
+F templates/index.html.mustache a87250268b5175f1a76a20d1bb27fb02849cd31b2ea59f9ff0f863efd52e559b
 F templates/manifest.json.mustache adc716dbdc1c6a843b9ba893b0d7db61de60fa88961b4000bb7db8f64c2856f0
-P 3956400ee1746e0f296a61c332eab7e08474f416cd0b9a09a61252b8de0bf838
-R f266c272e6087af23f2a2fac69099bc5
+P 114e181b3282157996fd8ef77536339a1cf0672aba80b759ac803eabd8439b92
+R 5249a227cfcaacbfa8279365db8e30a6
 U brian
-Z 50f5f78e3d11ac0d6446b36d4df24cbd
+Z c28d0f989c48462a7c0c644539a46737
 # Remove this line to create a well-formed Fossil manifest.

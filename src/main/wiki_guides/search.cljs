@@ -41,7 +41,7 @@
                      (add (.-href page) page)))))))
 
 (defn search [term]
-  (-> (.searchAsync ^flexsearch/Document @*fs-document term)
+  (-> (.searchAsync ^js @*fs-document term)
       (p/then #(js->clj % :keywordize-keys true))
       (p/then
         (fn [results]

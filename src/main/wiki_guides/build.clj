@@ -26,7 +26,9 @@
                     "fonts/Material-Design-Iconic-Font.woff"
                     "fonts/Material-Design-Iconic-Font.woff2"
                     "scripts/detect-element-resize.js"]]
-    (copy-resource filename)))
+    (copy-resource filename))
+  (io/copy (io/file "node_modules/flexsearch/dist/flexsearch.bundle.js")
+           (io/file "pwa/wiki-guides/assets/flexsearch.bundle.js")))
 
 (defn delete-recursive
   "Recursively delete a directory."
