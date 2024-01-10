@@ -85,7 +85,8 @@
           {:on-click (fn []
                        (rfe/push-state :wiki-guides.core/root)
                        (reset! guide-store/*current nil)
-                       (reset! search/*fs-document nil))
+                       (reset! search/*fs-document nil)
+                       (reset! *open false))
            :label    [:<>
                       [:i.zmdi.zmdi-chevron-left.rc-icon-larger]
                       [:span "\u00A0\u00A0All Guides"]]}]
@@ -127,7 +128,8 @@
                                      (rfe/push-state :wiki-guides.core/page {:page @*root}))}]
          [nav-item-view
           {:on-click (fn []
-                       (reset! search/*open true))
+                       (reset! search/*open true)
+                       (reset! *open false))
            :label    [:<>
                       [:i.zmdi.zmdi-search]
                       [:span "\u00A0Search"]]}]]]])))

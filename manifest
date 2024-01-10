@@ -1,5 +1,5 @@
-C Resolved\sminification\sissue,\sand\sinitial\sguide\sdata\sissue
-D 2024-01-10T06:38:57.189
+C Close\smobile\snav\son\ssome\sactions
+D 2024-01-10T15:20:48.679
 F .fossil-settings/ignore-glob 4ef6cade7dc090ade9cc9335457ddde6c886c06f4cfa73ef72a5428fe9e224b4
 F package-lock.json b1f2fb847b98bb4bf6ab10ebb938908fd1590be0a0dc9715819902cddc76f7cc
 F package.json f2ded93e0b92d94b80faff8d19760b5fbdc98be014c3068c77b3539704873322
@@ -23,7 +23,7 @@ F src/main/wiki_guides/core.cljs 3207d89ed43f1d129a9c9a5b51af8f681f2f40cfcdca244
 F src/main/wiki_guides/dialog/confirm.cljs 01552801c49d2177de78e5bf2c0e9261c3d08d5a4aa3b52eecc4f3dbfce00bed
 F src/main/wiki_guides/fetch.cljs f3f309ec6ba8eee54b5b164143c02014096d5e22f583853bba3bff420f4ab2bf
 F src/main/wiki_guides/guides.cljs e3e83887b97dbcb38a79cdf4b5715957e229412ff9a96f1993666dc6377f1e6f
-F src/main/wiki_guides/nav.cljs bd35087dfd6d34a984282b0071e2e1c3b9fda0e0589d1be100beab739c922430
+F src/main/wiki_guides/nav.cljs 1d710ce97f3d82e0b9ccd74b88538993f1d3bfa1b2e425f67f39d4c6b86f9d4b
 F src/main/wiki_guides/page.cljs 6bb231271f47a292daf89278c96a3a3cd782e59670b9e87d0728dcc44f0e3ca9
 F src/main/wiki_guides/page/controller.cljs 33997d9056fd1e4771609d583303d5e62f11cd6d1c20f6c4be16d95b00104e6d
 F src/main/wiki_guides/page/img_modal.cljs e3cf6d121a3304726bb33b0f4697942a8f8863d60bcd4849f7c5b0d1e4f522e2
@@ -46,8 +46,8 @@ F ssl/keystore.jks d38da8084a1cbc6ff896f648ffd0a9282de267eb7505b48b6dc9458941242
 F ssl/localhost.crt ca11cc47ecad3b9a2dd483b761c4f725c896af309f68bd19773779e7fff9970d
 F templates/index.html.mustache a87250268b5175f1a76a20d1bb27fb02849cd31b2ea59f9ff0f863efd52e559b
 F templates/manifest.json.mustache adc716dbdc1c6a843b9ba893b0d7db61de60fa88961b4000bb7db8f64c2856f0
-P 114e181b3282157996fd8ef77536339a1cf0672aba80b759ac803eabd8439b92
-R 5249a227cfcaacbfa8279365db8e30a6
+P 56d92cb17fff027c434c402e74f8cba27cc3c6485349fd8f611af58bc88a732d
+R dc3803d35027021d53d45707770ab61e
 U brian
-Z c28d0f989c48462a7c0c644539a46737
+Z 0c8c9928170671d15d350e4e517e873f
 # Remove this line to create a well-formed Fossil manifest.
