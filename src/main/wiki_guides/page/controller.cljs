@@ -2,6 +2,7 @@
   (:require [promesa.core :as p]
             [reagent.core :as r]
             [wiki-guides.fetch :as fetch]
+            [wiki-guides.page.transform :as page-transform]
             [wiki-guides.search :as search]
             [wiki-guides.store.guide :as guide-store]
             [wiki-guides.store.page :as page-store]
@@ -16,33 +17,31 @@
   (str "<h1>Error on page load: " error "</h1>"))
 
 (defn start [{:keys [path]}]
-  (let [href (str "/" (:page path))]
+  (let [href (str "/" (:page path))
+        guide-href (utils/guide-root href)]
     (reset! *content nil)
-    (p/let [guide-href (utils/guide-root href)
-            guide (guide-store/fetch guide-href)]
-      (guide-store/set-current! (or guide {:href guide-href
+    (p/let [{:keys [aliases] :as guide} (guide-store/fetch guide-href)
+            clean-href (-> href
+                           (page-transform/coalesce-url)
+                           (page-transform/replace-aliases (:href guide) aliases))
+            clean-guide-href (utils/guide-root clean-href)]
+      (guide-store/set-current! (or guide {:href clean-guide-href
                                            :aliases []}))
       (search/init!)
-      (p/let [page (-> (page-store/fetch href)
+      (p/let [page (-> (page-store/fetch clean-href)
                        (p/then (fn [page]
                                  (if (and page (pos? (:fetched page)))
                                    page
-                                   (-> (fetch/promise href)
+                                   (-> (fetch/promise clean-href)
                                        (p/catch #(hash-map :html (error-content %)))))))
                        (p/catch (fn [_]
                                   (reset! *content (error-content "Unexpected Error"))
-                                  (fetch/offer! href))))]
+                                  (fetch/offer! clean-href))))]
         (reset! *content (:html page))
         ; Refetch the guide if it was an alias
-        (if (and (not= (:href page) href)
+        (if (and (not= (:href page) clean-href)
                  (zero? (:broken page)))
-          (p/let [alias guide-href
-                  guide-href (utils/guide-root (:href page))
-                  guide (guide-store/fetch guide-href)]
-            (guide-store/set-current! (or guide {:href guide-href
-                                                 :aliases [alias]}))
-            (guide-store/add-alias! alias)
-            (search/init!)))))))
+          (guide-store/add-alias! clean-guide-href))))))
 
 
 
