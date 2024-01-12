@@ -85,6 +85,12 @@
        (s/select (s/tag :main))
        (first)))
 
+(defn extract-guide-icon [h]
+  (->> h
+       (s/select (s/descendant (s/tag :figure)
+                               (s/tag :img)))
+       (first)))
+
 (defn prefetch! [url]
   (let [href (utils/url-path url)]
     (offer! href)))
@@ -147,6 +153,23 @@
           (if success?
             (p/resolve! p record-or-error)
             (p/reject! p record-or-error)))))
+    p))
+
+(defn guide [url title]
+  (let [p (p/deferred)]
+    (go
+      (let [response (<! (impl url))]
+        (if (not (:ok response))
+          (p/reject! p (:status response))
+          (let [h (response->hickory response)
+                guide-img (extract-guide-icon h)
+                icon-url (-> (get-in guide-img [:attrs :src])
+                             (utils/image-resize "240px"))]
+            (-> (guide-store/add {:href    url
+                                  :title   title
+                                  :aliases []
+                                  :icon    icon-url})
+                (p/then #(p/resolve! p %)))))))
     p))
 
 (defn init! []

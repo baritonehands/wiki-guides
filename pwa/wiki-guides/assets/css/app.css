@@ -31,10 +31,20 @@ td, th {
 
 .guide-list {
     padding: 32px 64px;
+    margin-right: 10px;
 }
 
 .guide-list img, .guide-list .guide-item {
     width: 120px;
+}
+
+.guide-list .guide-item {
+    padding-bottom: 20px;
+}
+
+.guide-item-add {
+    width: 100%;
+    height: 120px;
 }
 
 .guide-icon {
@@ -148,6 +158,10 @@ td, th {
 
     .guide-list img, .guide-list .guide-item {
         width: 90px;
+    }
+
+    .guide-item-add {
+        height: 90px;
     }
 }
 

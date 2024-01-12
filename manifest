@@ -1,9 +1,9 @@
-C Added\sPWA\simages
-D 2024-01-12T05:59:04.796
+C Added\sguide\sadding\sform
+D 2024-01-12T21:59:23.261
 F .fossil-settings/ignore-glob 4ef6cade7dc090ade9cc9335457ddde6c886c06f4cfa73ef72a5428fe9e224b4
 F package-lock.json b1f2fb847b98bb4bf6ab10ebb938908fd1590be0a0dc9715819902cddc76f7cc
 F package.json f2ded93e0b92d94b80faff8d19760b5fbdc98be014c3068c77b3539704873322
-F pwa/wiki-guides/assets/css/app.css f73362a6d650d7b9e3824d62701d406d218941a48dee27876ce4f2b75a5e059b
+F pwa/wiki-guides/assets/css/app.css 8c1b07a88bd4b50ca556b65b5064e8e5a9ea15cbdd53d3545ec482404795ff6f
 F pwa/wiki-guides/assets/images/icon192.png 61fa81aee819a6c868f23fdc6ef56378a3be1ae8a34ef9dafb34b86a731e178e
 F pwa/wiki-guides/assets/images/icon512.png 152bdc64ae4b3cadd371aa99c84acb542379838a1e9f907af9418928c1ec8e15
 F pwa/wiki-guides/assets/images/screenshot_narrow.png 41d85db3b1ae640da471a5f52c4b8122e3d7bd4cbc93b0e187e90bad6fa6f9e4
@@ -25,8 +25,8 @@ F src/main/wiki_guides/channels.cljs 1c4e0c3523d35ae65a4d7693bdd367f0099b79eab51
 F src/main/wiki_guides/config.cljs 044562f5bec45698239743e0802b88a9095d1c1fe92ea81ef082dc54116fb3ea
 F src/main/wiki_guides/core.cljs 3207d89ed43f1d129a9c9a5b51af8f681f2f40cfcdca2443eb9ccb4f3244a2d7
 F src/main/wiki_guides/dialog/confirm.cljs 01552801c49d2177de78e5bf2c0e9261c3d08d5a4aa3b52eecc4f3dbfce00bed
-F src/main/wiki_guides/fetch.cljs f3f309ec6ba8eee54b5b164143c02014096d5e22f583853bba3bff420f4ab2bf
-F src/main/wiki_guides/guides.cljs e3e83887b97dbcb38a79cdf4b5715957e229412ff9a96f1993666dc6377f1e6f
+F src/main/wiki_guides/fetch.cljs 673208cbc2e1a7db2ad15003728e818eb36afaced57a61f0b8790c60bd9cb806
+F src/main/wiki_guides/guides.cljs 44b74cc013969a4fc85ac9416cf317847e67adf3f2d58dbb6f16d6ff7531d1e2
 F src/main/wiki_guides/nav.cljs 1d710ce97f3d82e0b9ccd74b88538993f1d3bfa1b2e425f67f39d4c6b86f9d4b
 F src/main/wiki_guides/page.cljs 6bb231271f47a292daf89278c96a3a3cd782e59670b9e87d0728dcc44f0e3ca9
 F src/main/wiki_guides/page/controller.cljs 0cc89fde976601083319f0b6f5e997eb6ac1e52e5ecdf7ce09df5b06b3de40b5
@@ -50,8 +50,8 @@ F ssl/keystore.jks d38da8084a1cbc6ff896f648ffd0a9282de267eb7505b48b6dc9458941242
 F ssl/localhost.crt ca11cc47ecad3b9a2dd483b761c4f725c896af309f68bd19773779e7fff9970d
 F templates/index.html.mustache bbe8b51220076ffaa576badaa2875e6fd83cb7b213e968ee4075bc094199b3a9
 F templates/manifest.json.mustache 2844fab9d34cf1163947ceb0f263731fa79e7852a1cd260976d93ce934f5a204
-P af82ceb09553759b1656bfd1e6f7555b284b5a9e9c3164d2d87d27afe3eefdf2
-R 1513480313aef7ac82202ce841832764
+P f6111463b7ead493c6f531649d24739240e68f9399256cc472f5838ef6edeaf1
+R 57cb1348ab01f8a81ee4b02744ab4a69
 U brian
-Z 2b7eeb7a1d17714ae97c74180c8b63b2
+Z 9670d0dbd2b8834c10c380f3b86fd9b1
 # Remove this line to create a well-formed Fossil manifest.
