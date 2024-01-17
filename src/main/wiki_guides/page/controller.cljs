@@ -38,7 +38,6 @@
                                   (reset! *content (error-content "Unexpected Error"))
                                   (fetch/offer! clean-href))))]
         (reset! *content (:html page))
-        ; Refetch the guide if it was an alias
         (if (and (not= (:href page) clean-href)
                  (zero? (:broken page)))
           (guide-store/add-alias! clean-guide-href))))))
