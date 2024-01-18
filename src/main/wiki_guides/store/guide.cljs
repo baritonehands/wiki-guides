@@ -20,6 +20,13 @@
         (fn [orig]
           (store/with-open-db+txn store/guides-store-name #(.put % (clj->js (merge-with store/record-merge orig obj))) true)))))
 
+(defn delete [href]
+  (-> (store/with-open-db+txn store/guides-store-name #(-> % (.index "href") (.get href)))
+      (p/then
+        (fn [orig]
+          (if orig
+            (store/with-open-db+txn store/guides-store-name #(.delete % (.-id orig)) true))))))
+
 (defn update-guide! [pred f & args]
   (let [update-fn (fn []
                     (apply swap! *current f args))
@@ -38,6 +45,11 @@
   (update-guide!
     (constantly true)
     assoc :download v))
+
+(defn set-title! [v]
+  (update-guide!
+    (constantly true)
+    assoc :title v))
 
 (defn by-title []
   (-> (store/with-open-db+txn store/guides-store-name #(-> % (.index "title") (.getAll)))

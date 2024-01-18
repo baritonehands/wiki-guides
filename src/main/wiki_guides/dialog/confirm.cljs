@@ -7,7 +7,7 @@
        (mapcat identity)
        (into [button :parts {:wrapper {:style {:flex "1 0 auto"}}}])))
 
-(defn view [{:keys      [text confirm-label cancel-label on-confirm on-cancel]
+(defn view [{:keys      [text confirm-label confirm-class cancel-label on-confirm on-cancel]
              title-text :title}]
   [modal-panel
    :backdrop-on-click on-cancel
@@ -27,7 +27,7 @@
         :child
         [prompt-button
          :label confirm-label
-         :class "btn-primary btn-lg btn-block"
+         :class (str (or confirm-class "btn-primary") " btn-lg btn-block")
          :on-click on-confirm]]
        [box
         :size "1"

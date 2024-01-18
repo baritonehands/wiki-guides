@@ -2,6 +2,7 @@
   (:require ["react" :as react]
             [re-com.core :refer [line h-box scroller throbber]]
             [reagent.core :as r]
+            [wiki-guides.guides.edit :as guide-edit]
             [wiki-guides.page.controller :as page-controller]
             [wiki-guides.page.img-modal :as img-modal]
             [wiki-guides.nav :as nav]
@@ -55,4 +56,5 @@
      [line :size "1px" :color "#CCCCCC"]
      [:f> button-handler-view route]]]
    [img-modal/view]
-   [search/dialog]])
+   [search/dialog]
+   [guide-edit/dialog]])

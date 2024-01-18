@@ -9,6 +9,7 @@
             [wiki-guides.fetch :as fetch]
             [wiki-guides.search :as search]
             [wiki-guides.store.guide :as guide-store]
+            [wiki-guides.guides.edit :as guide-edit]
             [wiki-guides.store.page :as page-store]
             [wiki-guides.dialog.confirm :as confirm]
             [wiki-guides.utils :as utils]))
@@ -19,7 +20,7 @@
 (defn set-root! [href]
   (reset! *root href))
 
-(defn nav-item-view [{:keys [href label on-click child]}]
+(defn nav-item-view [{:keys [href label on-click class child]}]
   [box
    :class "nav-item"
    :attr (if on-click
@@ -29,12 +30,12 @@
    (cond
      on-click
      [hyperlink
-      :class "nav-item-link"
+      :class (str class " nav-item-link")
       :label label
       :on-click on-click]
      href
      [hyperlink-href
-      :class "nav-item-link"
+      :class (str class " nav-item-link")
       :label label
       :href href]
 
@@ -93,12 +94,9 @@
          [line
           :color "#CCCCCC"]
          [nav-item-view
-          {:child
-           [title
-            :level :level2
-            :class "guide-title"
-            :style {:color "#337ab7"}
-            :label (:title @guide-store/*current)]}]
+          {:on-click #(reset! guide-edit/*open true)
+           :label (:title @guide-store/*current)
+           :class "guide-title"}]
          (if (:download @guide-store/*current)
            [:f> progress-view])
          [nav-item-view {:child [:<>
