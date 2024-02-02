@@ -50,7 +50,7 @@
               (async/close! chan)))))
       chan)))
 
-(defn- impl [url]
+(defn impl [url]
   (let [chan (async/chan)
         p (js/fetch (str base-url url))]
     (-> p
@@ -84,6 +84,24 @@
   (->> h
        (s/select (s/tag :main))
        (first)))
+
+(defn extract-spoilers [h]
+  (some-> (s/select (s/id "__NEXT_DATA__") h)
+          (first)
+          :content
+          (first)
+          (->>
+            (.parse js/JSON))
+          (js->clj :keywordize-keys true)
+
+          :props :pageProps :page :page :htmlEntities
+          (->> (filter (fn [entity]
+                         (-> entity :values :html (str/includes? "spoiler")))))
+          (first)
+          :values
+          :html
+          (hickory/parse)
+          (hickory/as-hickory)))
 
 (defn extract-guide-icon [h]
   (->> h
@@ -124,6 +142,7 @@
                  (extract-main)
                  (cond->>
                    process? (page-transform/process url)))
+        spoilers (extract-spoilers h)
         record (cond-> {:href      (if (:redirected response)
                                      (:url response)
                                      url)

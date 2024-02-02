@@ -125,3 +125,15 @@
                                       (str guide-href "/")))]
         (.substring href 1))
       [])))
+
+(defn spoilers [h]
+  (let [lis (s/select (s/tag :li) h)]
+    (into {} (for [li lis
+                   :let [a (some-> (s/select (s/tag :a) li)
+                                   (first))
+                         spoiler (some-> (s/select (s/class :inline-spoiler) li)
+                                         (first))]
+                   :when spoiler]
+               [(-> (get-in a [:attrs :href])
+                    (coalesce-url))
+                (hickory-to-text spoiler)]))))
