@@ -124,13 +124,14 @@
                          :on-click (fn []
                                      (reset! *open false)
                                      (rfe/push-state :wiki-guides.core/page {:page @*root}))}]
-         [nav-item-view
-          {:on-click (fn []
-                       (reset! search/*open true)
-                       (reset! *open false))
-           :label    [:<>
-                      [:i.zmdi.zmdi-search]
-                      [:span "\u00A0Search"]]}]]]])))
+         (if (:download @guide-store/*current)
+           [nav-item-view
+            {:on-click (fn []
+                         (reset! search/*open true)
+                         (reset! *open false))
+             :label    [:<>
+                        [:i.zmdi.zmdi-search]
+                        [:span "\u00A0Search"]]}])]]])))
 
 (defn update-guide-root-fn [{:keys [path-params]}]
   (fn guide-root-fn! []

@@ -1,6 +1,7 @@
-C Added\stitle\supdate\sand\sdelete\sdialog
-D 2024-01-18T19:20:36.974
+C Hide\ssearch\swhen\snot\sdownloading\sguide
+D 2024-10-26T23:39:34.853
 F .fossil-settings/ignore-glob 4ef6cade7dc090ade9cc9335457ddde6c886c06f4cfa73ef72a5428fe9e224b4
+F bun.lockb 5eebba41a584c746c70a3916b8df9a6e0fd75811a8db20cb8c5216dc1735cf65
 F package-lock.json b1f2fb847b98bb4bf6ab10ebb938908fd1590be0a0dc9715819902cddc76f7cc
 F package.json f2ded93e0b92d94b80faff8d19760b5fbdc98be014c3068c77b3539704873322
 F pwa/wiki-guides/assets/css/app.css 8c1b07a88bd4b50ca556b65b5064e8e5a9ea15cbdd53d3545ec482404795ff6f
@@ -28,7 +29,7 @@ F src/main/wiki_guides/dialog/confirm.cljs 0ed821ec355f0832579c48985fbe0664b9454
 F src/main/wiki_guides/fetch.cljs 673208cbc2e1a7db2ad15003728e818eb36afaced57a61f0b8790c60bd9cb806
 F src/main/wiki_guides/guides.cljs 44b74cc013969a4fc85ac9416cf317847e67adf3f2d58dbb6f16d6ff7531d1e2
 F src/main/wiki_guides/guides/edit.cljs 8b052725ae21459a8a8bed16df2ba78fb8e04dfc76374a89d930e3083b6ee928
-F src/main/wiki_guides/nav.cljs d9d7365c7d59d0f7d2f74723b1e4555bdf8e83a4626a29a2348cbd1890621478
+F src/main/wiki_guides/nav.cljs 2b74fc55cb2d6405d9b6e2a64b520bd71aee2050527ea66381a00880f8d5135f
 F src/main/wiki_guides/page.cljs 0307060572897bdff9e00396c289a82b4a1f91fc650617be26d8cd2d4541b1c0
 F src/main/wiki_guides/page/controller.cljs 426ecdd6fc66ec3ddbd44e01a5cfe8066a6c068298e4308e0cb78c7bcb023d08
 F src/main/wiki_guides/page/img_modal.cljs e3cf6d121a3304726bb33b0f4697942a8f8863d60bcd4849f7c5b0d1e4f522e2
@@ -51,8 +52,8 @@ F ssl/keystore.jks d38da8084a1cbc6ff896f648ffd0a9282de267eb7505b48b6dc9458941242
 F ssl/localhost.crt ca11cc47ecad3b9a2dd483b761c4f725c896af309f68bd19773779e7fff9970d
 F templates/index.html.mustache bbe8b51220076ffaa576badaa2875e6fd83cb7b213e968ee4075bc094199b3a9
 F templates/manifest.json.mustache 2844fab9d34cf1163947ceb0f263731fa79e7852a1cd260976d93ce934f5a204
-P ef494c3fad4c831a10cdc57456bffbc57d2cea82b34c262ec0f24f0882e295d4
-R 0656898a2746a8fc5f8c72782c646676
+P 7351c1c7a213bd2af81870f19eb10c5dd9c0692db03e9b7f99632f0ae247dd93
+R bd175b0315a264d38d7cd7645aa47f9c
 U brian
-Z 77b0f1fc40f983fa86adcdd982e2600e
+Z 52e91a8b5e9e2105d9c482e8c1467ad7
 # Remove this line to create a well-formed Fossil manifest.
