@@ -21,8 +21,10 @@
       (let [on-click (react/useCallback
                        (fn [event]
                          (if (img-event? event)
-                           (let [url (-> event .-target (.getAttribute "src"))]
-                             (img-modal/show! (utils/image-resize url "1280"))))))
+                           (if-let [url (-> event .-target (.getAttribute "data-modal-src"))]
+                             (img-modal/show! url)
+                             (if-let [url (-> event .-target (.getAttribute "src"))]
+                               (img-modal/show! (utils/image-resize url "1280")))))))
             fragment (:fragment route)]
         (react/useEffect
           (fn []

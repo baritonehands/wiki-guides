@@ -59,18 +59,38 @@
 (defn remove-loc [loc _]
   (zip/remove loc))
 
-(defn update-images [loc node]
-  (let [src (get-in node [:attrs :src])]
-    (zip/replace loc (assoc-in node [:attrs :src] (utils/image-resize src "640")))))
+(defn find-alt [wiki-page alt]
+  (if-let [img (->> wiki-page
+                    :htmlEntities
+                    (map (fn [tag]
+                           (->> tag
+                                (s/select (s/and
+                                            (s/tag :img)
+                                            (s/attr :alt #(= % alt))))
+                                (first))))
+                    (filter identity)
+                    (first))]
+    {:src-small (get-in img [:attrs :src])
+     :src-large (get-in img [:attrs :data-modal-src])}))
 
-(defn process [url h]
+(defn update-images [wiki-page loc node]
+  (let [alt (get-in node [:attrs :alt])
+        src (get-in node [:attrs :src])
+        real-img (find-alt wiki-page alt)]
+    (if real-img
+      (zip/replace loc (-> node
+                           (assoc-in [:attrs :src] (:src-small real-img))
+                           (assoc-in [:attrs :data-modal-src] (:src-large real-img))))
+      (zip/replace loc (assoc-in node [:attrs :src] (utils/image-resize src "640"))))))
+
+(defn process [url wiki-page h]
   (-> h
       (update-tags (s/tag :a) (update-a-fn url))
       (update-tags (s/class :wiki-video) update-video)
       (update-tags (s/class :gh-blue-box) update-blue-box)
       (update-tags (s/or (s/class :wiki-bobble)
                          (s/class :feedback-container)) remove-loc)
-      (update-tags (s/descendant (s/tag :button) (s/tag :img)) update-images)))
+      (update-tags (s/descendant (s/tag :button) (s/tag :img)) (partial update-images wiki-page))))
 
 (def inline-element
   "Elements that should not add whitespace"

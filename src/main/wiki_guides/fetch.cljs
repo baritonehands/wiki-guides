@@ -80,16 +80,46 @@
        (page-transform/hickory-to-text)
        (str/trim)))
 
+(defn extract-wiki-html [entity]
+  (-> entity
+      (get-in [:values :html])
+      (hickory/parse-fragment)
+      (first)
+      (hickory/as-hickory)))
+
+(defn extract-wiki-page [h]
+  (try
+    (let [script (->> h
+                      (s/select (s/and (s/tag :script)
+                                       (s/attr :type #(= % "application/json")))))
+          data (-> script
+                   (first)
+                   (page-transform/hickory-to-text)
+                   (->> (.parse js/JSON))
+                   (js->clj :keywordize-keys true)
+                   (get-in [:props :pageProps :page]))
+          page (get data :page)
+          breadcrumbs (get data :breadcrumbs)]
+      (-> page
+          (update :htmlEntities #(mapv extract-wiki-html %))
+          (assoc :breadcrumbs breadcrumbs)))
+    (catch js/SyntaxError _
+      {})))
+
 (defn extract-main [h]
   (->> h
        (s/select (s/tag :main))
        (first)))
 
 (defn extract-guide-icon [h]
-  (->> h
-       (s/select (s/descendant (s/tag :figure)
-                               (s/tag :img)))
-       (first)))
+  (let [wiki-page (extract-wiki-page h)]
+    (if-let [primary-img (get-in wiki-page [:breadcrumbs 0 :primaryImage :url])]
+      primary-img
+      (->
+        (s/select (s/descendant (s/tag :figure)
+                                (s/tag :img)) h)
+        (first)
+        (get-in [:attrs :src])))))
 
 (defn prefetch! [url]
   (let [href (utils/url-path url)]
@@ -120,10 +150,11 @@
     [false (:status-text response)])
   (let [h (response->hickory response)
         title (extract-title h)
+        wiki-page (extract-wiki-page h)
         main (-> h
                  (extract-main)
                  (cond->>
-                   process? (page-transform/process url)))
+                   process? (page-transform/process url wiki-page)))
         record (cond-> {:href      (if (:redirected response)
                                      (:url response)
                                      url)
@@ -135,7 +166,8 @@
                         :title     title}
                        process? (assoc :html (render/hickory-to-html main)
                                        :text (page-transform/hickory-to-text main))
-                       (not process?) (assoc :main main)
+                       (not process?) (assoc :main main
+                                             :wiki-page wiki-page)
                        (:redirected response) (assoc :aliases [url]))]
     (when (and process? (:download @guide-store/*current))
       (doseq [href (page-transform/wiki-links @guide-store/*current main)]
@@ -163,8 +195,7 @@
           (p/reject! p (:status response))
           (let [h (response->hickory response)
                 guide-img (extract-guide-icon h)
-                icon-url (-> (get-in guide-img [:attrs :src])
-                             (utils/image-resize "240px"))]
+                icon-url (utils/image-resize guide-img "240px")]
             (-> (guide-store/add {:href    url
                                   :title   title
                                   :aliases []
@@ -180,9 +211,10 @@
           (let [response (<! (impl url))]
             (let [[_ record-or-error] (response->record! url response false)]
               (if (:ok response)
-                (let [msg (cond-> {:url     (:href record-or-error)
-                                   :title   (:title record-or-error)
-                                   :hickory (:main record-or-error)}
+                (let [msg (cond-> {:url       (:href record-or-error)
+                                   :title     (:title record-or-error)
+                                   :hickory   (:main record-or-error)
+                                   :wiki-page (:wiki-page record-or-error)}
                                   (:aliases record-or-error) (assoc :aliases (:aliases record-or-error)))]
                   (>! queues/web-workers ["process" {:guide @guide-store/*current
                                                      :page  msg}])))

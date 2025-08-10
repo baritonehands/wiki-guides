@@ -22,9 +22,9 @@
 (defn init! []
   (dotimes [_ num-blocks]
     (go-loop []
-      (let [{{:keys [url title hickory aliases]} :page
-             guide                               :guide} (<! chan)
-            main (page-transform/process url hickory)
+      (let [{{:keys [url title hickory wiki-page aliases]} :page
+             guide                                         :guide} (<! chan)
+            main (page-transform/process url wiki-page hickory)
             record (cond-> {:href      url
                             :guideHref (:href guide)
                             :broken    0
