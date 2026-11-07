@@ -74,13 +74,15 @@
      :src-large (get-in img [:attrs :data-modal-src])}))
 
 (defn update-images [wiki-page loc node]
-  (let [alt (get-in node [:attrs :alt])
-        src (get-in node [:attrs :src])
+  (let [alt (get-in node [:content 0 :attrs :alt])
+        src (get-in node [:content 0 :attrs :src])
         real-img (find-alt wiki-page alt)]
     (if real-img
       (zip/replace loc (-> node
-                           (assoc-in [:attrs :src] (:src-small real-img))
-                           (assoc-in [:attrs :data-modal-src] (:src-large real-img))))
+                           (assoc :tag :button)
+                           (assoc-in [:content 0 :attrs :src] (:src-small real-img))
+                           (assoc-in [:content 0 :attrs :data-modal-src] (:src-large real-img))
+                           (update-in [:content 0 :attrs] dissoc :width :height)))
       (zip/replace loc (assoc-in node [:attrs :src] (utils/image-resize src "640"))))))
 
 (defn process [url wiki-page h]
@@ -90,7 +92,7 @@
       (update-tags (s/class :gh-blue-box) update-blue-box)
       (update-tags (s/or (s/class :wiki-bobble)
                          (s/class :feedback-container)) remove-loc)
-      (update-tags (s/descendant (s/tag :button) (s/tag :img)) (partial update-images wiki-page))))
+      (update-tags (s/class :wiki-image) (partial update-images wiki-page))))
 
 (def inline-element
   "Elements that should not add whitespace"
