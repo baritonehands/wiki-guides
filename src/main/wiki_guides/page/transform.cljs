@@ -73,6 +73,19 @@
     {:src-small (get-in img [:attrs :src])
      :src-large (get-in img [:attrs :data-modal-src])}))
 
+(defn unwrap-node
+  "Replaces the current zipper node with its children, leaving the zipper
+  positioned just before the unwrapped children (safe for continued zip/next)."
+  [loc node]
+  (let [children (zip/children loc)
+        ;; Insert each child to the left of the current node in order
+        loc-with-children (reduce (fn [l child] (zip/insert-left l child))
+                                  loc
+                                  children)]
+    ;; Remove the original wrapper node; zip/remove moves focus to the preceding
+    ;; node in depth-first order (which is right before the newly inserted children)
+    (zip/remove loc-with-children)))
+
 (defn update-images [wiki-page loc node]
   (let [alt (get-in node [:content 0 :attrs :alt])
         src (get-in node [:content 0 :attrs :src])
@@ -92,6 +105,7 @@
       (update-tags (s/class :gh-blue-box) update-blue-box)
       (update-tags (s/or (s/class :wiki-bobble)
                          (s/class :feedback-container)) remove-loc)
+      (update-tags (s/class :wiki-image-frame) unwrap-node)
       (update-tags (s/class :wiki-image) (partial update-images wiki-page))))
 
 (def inline-element

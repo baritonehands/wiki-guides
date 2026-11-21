@@ -1,5 +1,5 @@
-C Fixed\simage\sloading\sand\sstyling
-D 2026-11-07T03:58:39.852
+C Fix\sframed\simage
+D 2026-11-21T01:01:22.794
 F .fossil-settings/ignore-glob 4ef6cade7dc090ade9cc9335457ddde6c886c06f4cfa73ef72a5428fe9e224b4
 F bun.lockb cb6e90d847bb50e0fa12734cd2179790a7bea6faf4811f61ac3eb9b752f1c038 x
 F package-lock.json f2b1a64ed14b9c76cc7743ab2f4c9dedf3a6ef04a7e45f260e0ccdc34e4a9409
@@ -33,7 +33,7 @@ F src/main/wiki_guides/nav.cljs 2b74fc55cb2d6405d9b6e2a64b520bd71aee2050527ea663
 F src/main/wiki_guides/page.cljs 9ee9b09dee2e3fa8d974e9165945d63a1ae4ff4e9edd6926d04ddcec3ed461a0
 F src/main/wiki_guides/page/controller.cljs 426ecdd6fc66ec3ddbd44e01a5cfe8066a6c068298e4308e0cb78c7bcb023d08
 F src/main/wiki_guides/page/img_modal.cljs e3cf6d121a3304726bb33b0f4697942a8f8863d60bcd4849f7c5b0d1e4f522e2
-F src/main/wiki_guides/page/transform.cljs 010c9e9c1b5741d4c418444d59c7d7962a447553e15530eac15158d681d0c17f
+F src/main/wiki_guides/page/transform.cljs 917ff45aedbcfedd2086257850c0952ddb600f86e13936854b1cb4a7c31de95c
 F src/main/wiki_guides/search.cljs d46a4dcda4002bfee95b311bb9e08d0439865b8c93f1a5e324ba2fffb3bbdc00
 F src/main/wiki_guides/service_worker/core.cljs f00b05dbdbb909c2c73766048b3520de642cf55a2b66f8c9e5f837b93033530e
 F src/main/wiki_guides/store.cljs cc19ae9053fa7d48c8b09735b8c46959428d224ffdd970a941df52682ec3434d
@@ -52,8 +52,8 @@ F ssl/keystore.jks d38da8084a1cbc6ff896f648ffd0a9282de267eb7505b48b6dc9458941242
 F ssl/localhost.crt ca11cc47ecad3b9a2dd483b761c4f725c896af309f68bd19773779e7fff9970d
 F templates/index.html.mustache bbe8b51220076ffaa576badaa2875e6fd83cb7b213e968ee4075bc094199b3a9
 F templates/manifest.json.mustache 2844fab9d34cf1163947ceb0f263731fa79e7852a1cd260976d93ce934f5a204
-P 6fa82c415f117a27a90c7110360e84cc2f486dfce8bb0bf415170afadcffa338
-R a16f529d1fcebb20aa6beb6ab6bf8a54
+P afa9df99f23ddf2a529f9e6b1c106248e573adc7e7b9283b60318bd247271839
+R 79831dbf3b736ced4dd0e1cb525f3a10
 U brian
-Z f7a02b9c89f326493fbd25d265ff5198
+Z 306bb516c8adceb4cd6ad517ee7a3f86
 # Remove this line to create a well-formed Fossil manifest.
